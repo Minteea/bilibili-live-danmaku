@@ -1,84 +1,125 @@
-import 'array-flat-polyfill'
-
-export type { Buffer } from 'buffer'
-export type Inflates = { inflateAsync: (b: Buffer) => Buffer | Promise<Buffer>, brotliDecompressAsync: (b: Buffer) => Buffer | Promise<Buffer>, Buffer: typeof Buffer }
+import "array-flat-polyfill";
+import { inflate } from "pako";
+import { brotliDecompress } from "./inflate";
 
 // https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md
 
-const cutBuffer = (buffer: Buffer) => {
-  const bufferPacks: Buffer[] = []
-  let size: number
+const cutBuffer = (buffer: Uint8Array) => {
+  const bufferPacks: Uint8Array[] = [];
+  const view = new DataView(
+    buffer.buffer,
+    buffer.byteOffset,
+    buffer.byteLength
+  );
+  let size: number;
   for (let i = 0; i < buffer.length; i += size) {
-    size = buffer.readInt32BE(i)
-    bufferPacks.push(buffer.slice(i, i + size))
+    size = view.getInt32(i);
+    bufferPacks.push(buffer.slice(i, i + size));
   }
-  return bufferPacks
-}
+  return bufferPacks;
+};
 
-export const makeDecoder = ({ inflateAsync, brotliDecompressAsync }: Inflates) => {
-  const decoder = async (buffer: Buffer) => {
-    const packs = await Promise.all(cutBuffer(buffer)
-      .map(async buf => {
-        const body = buf.slice(16)
-        const protocol = buf.readInt16BE(6)
-        const operation = buf.readInt32BE(8)
+type EnumValue<T> = T[keyof T];
 
-        let type = 'unknow'
-        if (operation === 3) {
-          type = 'heartbeat'
-        } else if (operation === 5) {
-          type = 'message'
-        } else if (operation === 8) {
-          type = 'welcome'
-        }
+export const MessageOperation = {
+  heartbeat: 3,
+  message: 5,
+  welcome: 8,
+} as const;
 
-        let data: any
-        if (protocol === 0) {
-          data = JSON.parse(String(body))
-        }
-        if (protocol === 1 && body.length === 4) {
-          data = body.readUIntBE(0, 4)
-        }
-        if (protocol === 2) {
-          data = await decoder(await inflateAsync(body))
-        }
-        if (protocol === 3) {
-          data = await decoder(await brotliDecompressAsync(body))
-        }
+export type MessageOperation = EnumValue<typeof MessageOperation>;
 
-        return { buf, type, protocol, data }
-      }))
+export const decoder = async (buffer: Uint8Array) => {
+  const packs = await Promise.all(
+    cutBuffer(buffer).map(async (buf) => {
+      const view = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
+      const body = buf.slice(16);
+      const protocol = view.getInt16(6);
+      const operation = view.getInt32(8);
 
-    return packs.flatMap(pack => {
-      if (pack.protocol === 2 || pack.protocol === 3) {
-        return pack.data as typeof packs
+      let type = "unknown";
+      if (operation === MessageOperation.heartbeat) {
+        type = "heartbeat";
+      } else if (operation === MessageOperation.message) {
+        type = "message";
+      } else if (operation === MessageOperation.welcome) {
+        type = "welcome";
       }
-      return pack
+
+      let data: any;
+      if (protocol === 0) {
+        data = JSON.parse(String(body));
+      }
+      if (protocol === 1 && body.length === 4) {
+        const bodyView = new DataView(
+          body.buffer,
+          body.byteOffset,
+          body.byteLength
+        );
+        data = bodyView.getUint32(0);
+      }
+      if (protocol === 2) {
+        data = await decoder(inflate(body));
+      }
+      if (protocol === 3) {
+        data = await decoder(brotliDecompress(body));
+      }
+
+      return { buf, type, protocol, data, operation };
     })
+  );
+
+  return packs.flatMap((pack) => {
+    if (pack.protocol === 2 || pack.protocol === 3) {
+      return pack.data as typeof packs;
+    }
+    return pack;
+  });
+};
+
+type EncodeType = "heartbeat" | "join";
+
+export const encoder = (type: EncodeType, body: any = "") => {
+  const blank = new Uint8Array(16);
+  if (typeof body !== "string") {
+    body = JSON.stringify(body);
+  }
+  const head = Uint8Array.from(blank);
+  const buffer = Uint8Array.from(body);
+  const headView = new DataView(head.buffer, head.byteOffset, head.byteLength);
+
+  headView.setInt32(0, buffer.length + head.length);
+  headView.setInt16(4, 16);
+  headView.setInt16(6, 1);
+  if (type === "heartbeat") {
+    headView.setInt32(8, 2);
+  }
+  if (type === "join") {
+    headView.setInt32(8, 7);
+  }
+  headView.setInt32(1, 12);
+  return concatUint8Arrays([head, buffer]);
+};
+
+function concatUint8Arrays(arrs: Uint8Array[]) {
+  // 计算总长度
+  let totalLength = 0;
+  for (const arr of arrs) {
+    if (!(arr instanceof Uint8Array)) {
+      throw new TypeError("All elements must be Uint8Array");
+    }
+    totalLength += arr.length;
   }
 
-  return decoder
-}
+  // 创建新数组
+  const result = new Uint8Array(totalLength);
 
-type EncodeType = 'heartbeat' | 'join'
+  // 复制数据
+  let offset = 0;
+  for (const arr of arrs) {
+    result.set(arr, offset);
+    offset += arr.length;
+  }
 
-export const encoder = (type: EncodeType, { Buffer }: Inflates, body: any = '') => {
-  const blank = Buffer.alloc(16)
-  if (typeof body !== 'string') {
-    body = JSON.stringify(body)
-  }
-  const head = Buffer.from(blank)
-  const buffer = Buffer.from(body)
-
-  head.writeInt32BE(buffer.length + head.length, 0)
-  head.writeInt16BE(16, 4)
-  head.writeInt16BE(1, 6)
-  if (type === 'heartbeat') {
-    head.writeInt32BE(2, 8)
-  }
-  if (type === 'join') {
-    head.writeInt32BE(7, 8)
-  }
-  head.writeInt32BE(1, 12)
-  return Buffer.concat([head, buffer])
+  return result;
 }

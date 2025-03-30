@@ -1,109 +1,84 @@
-# bilibili-live-ws [![npm](https://img.shields.io/npm/v/bilibili-live-ws.svg)](https://www.npmjs.com/package/bilibili-live-ws) ![Node CI](https://github.com/simon300000/bilibili-live-ws/workflows/Node%20CI/badge.svg)
+# bilibili-live-danmaku
 
-Bilibili 直播 WebSocket/TCP API
+[![npm](https://img.shields.io/npm/v/bilibili-live-danmaku.svg)](https://www.npmjs.com/package/bilibili-live-danmaku)
 
-LiveWS/KeepLiveWS 支持浏览器 *(实验性)*
+Bilibili 直播 WebSocket API，支持浏览器和服务端 JS 运行时
 
-应该支持 bilibili直播开放平台 <https://open-live.bilibili.com>
-
-注：如果在浏览器环境遇到问题，可以尝试手动指定引入 `bilibili-live-ws/browser`
+> 本项目基于[github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)的项目进行改进，使用符合现有 Web 标准的 API 和 ES 规范进行代码重构，满足不同 JS 运行时的可移植性
 
 ## API
 
 ```javascript
-const { LiveWS, LiveTCP, KeepLiveWS, KeepLiveTCP } = require('bilibili-live-ws')
-const live = new LiveWS(roomid)
+import { LiveWS, KeepLiveWS } from "bilibili-live-danmaku";
+const live = new LiveWS(roomid);
 // 或
-const live = new LiveTCP(roomid)
+const live = new KeepLiveWS(roomid);
 ```
 
 举个栗子:
 
 ```javascript
-const live = new LiveWS(14275133)
+const live = new LiveWS(14275133);
 
-live.on('open', () => console.log('Connection is established'))
+live.on("open", () => console.log("Connection is established"));
 // Connection is established
-live.on('live', () => {
-  live.on('heartbeat', console.log)
+live.on("welcome", () => {
+  live.on("heartbeat", console.log);
   // 74185
-})
+});
 ```
 
-或者用TCP (新功能):
+## Class: LiveWS / KeepLiveWS
 
-```javascript
-const live = new LiveTCP(26283)
+### new LiveWS()
 
-live.on('open', () => console.log('Connection is established'))
-// Connection is established
-live.on('live', () => {
-  live.on('heartbeat', console.log)
-  // 13928
-})
+```typescript
+  new LiveWS (roomid [, { address, protover, key, authBody, uid, buvid }])
 ```
-
-> 晚上做梦梦到一个白胡子的老爷爷和我说TCP更节约内存哦！
-
-## Class: LiveWS / LiveTCP / KeepLiveWS / KeepLiveTCP
-
-(Keep)LiveWS 和 (Keep)LiveTCP 的大部分API基本上一样, 区别在本文末尾有注明
-
-### new LiveWS(roomid [, { address, protover, key, authBody, uid, buvid }])
-
-### new LiveTCP(roomid [, { host, port, protover, key, authBody, uid, buvid }])
 
 - `roomid` 房间号
 
   比如 https://live.bilibili.com/14327465 中的 `14327465`
-  
-- `address` 可选, WebSocket连接的地址
+
+- `address` 可选, WebSocket 连接的地址
 
   默认 `'wss://broadcastlv.chat.bilibili.com/sub'`
 
-- `host` 可选, TCP连接的地址
-
-  默认 `'broadcastlv.chat.bilibili.com'`
-
-- `port` 可选, TCP连接的端口
-
-  默认 `2243`
-  
 - `protover` 可选 (1, 2, 3)
 
   默认 `2`
-  
-  * 1 (见 [#17](https://github.com/simon300000/bilibili-live-ws/issues/17))
-  * 2 (zlib.inflate)
-  * 3 (brotliDecompress)
-  
-- `uid` 可选, WS握手的 uid [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
 
-- `key` 可选, WS握手的 Token [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
+  - 1 (见 [#17](https://github.com/simon300000/bilibili-live-ws/issues/17))
+  - 2 (zlib.inflate)
+  - 3 (brotliDecompress)
 
-- `buvid` 可选, WS握手的 Token [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
+- `uid` 可选, WS 握手的 uid [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
 
-- `authBody` 可选, 可以和 <https://open-live.bilibili.com/document/> 配合使用, 会覆盖掉 `protover` `roomid` `key` `uid` `buvid`. 如果是 `object` 会按照握手包编码，如果是 `string`/`Buffer` 会直接发送
+- `key` 可选, WS 握手的 Token [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
+
+- `buvid` 可选, WS 握手的 Token [#397](https://github.com/simon300000/bilibili-live-ws/issues/397)
+
+- `authBody` 可选, 可以和 <https://open-live.bilibili.com/document/> 配合使用, 会覆盖掉 `protover` `roomid` `key` `uid` `buvid`. 如果是 `object` 会按照握手包编码，如果是 `string`/`Uint8Array` 会直接发送
 
 #### live.on('open')
 
-WebSocket连接上了
+WebSocket 连接上了
 
-#### live.on('live')
+#### live.on('welcome')
 
 成功登入房间
 
-#### live.on('heartbeat', (online) => ...)
+#### live.on('heartbeat', ({data: online}) => ...)
 
-收到服务器心跳包，会在30秒之后自动发送心跳包。
+收到服务器心跳包，会在 30 秒之后自动发送心跳包。
 
 - `online` 当前人气值
 
-#### live.on('msg', (data) => ...)
+#### live.on('msg', ({data}) => ...)
 
 - `data` 收到信息/弹幕/广播等
 
-  data的例子: (我simon3000送了一个辣条)
+  data 的例子: (我 simon3000 送了一个辣条)
 
   ```javascript
   {
@@ -152,11 +127,11 @@ WebSocket连接上了
   }
   ```
 
-#### live.on(cmd, (data) => ...)
+#### live.on(cmd, ({data}) => ...)
 
-用法如上，只不过只会收到特定cmd的Event。
+用法如上，只不过只会收到特定 cmd 的 Event。
 
-比如 `live.on('DANMU_MSG')` 只会收到弹幕Event，一个弹幕Event的Data例子如下: (我simon3000发了个`233`)
+比如 `live.on('DANMU_MSG')` 只会收到弹幕 Event，一个弹幕 Event 的 Data 例子如下: (我 simon3000 发了个`233`)
 
 ```javascript
 {
@@ -176,8 +151,6 @@ WebSocket连接上了
 }
 ```
 
-
-
 #### live.on('close')
 
 连接关闭事件
@@ -188,13 +161,13 @@ WebSocket连接上了
 
 #### live.heartbeat()
 
-无视30秒时间，直接发送一个心跳包。
+无视 30 秒时间，直接发送一个心跳包。
 
 如果连接正常，会收到来自服务器的心跳包，也就是 `live.on('heartbeat')`，可以用于更新人气值。
 
 #### live.close()
 
-关闭WebSocket/TCP Socket连接。
+关闭 WebSocket 连接。
 
 #### live.getOnline()
 
@@ -202,26 +175,26 @@ WebSocket连接上了
 
 #### live.on('message')
 
-WebSocket/TCP收到的Raw Buffer（不推荐直接使用）
+WebSocket 收到的 Raw Buffer（不推荐直接使用）
 
 #### live.send(buffer)
 
-使用 WebSocket 或者 TCP 发送信息
+使用 WebSocket 发送信息
 
 ### getConf(roomid)
 
-选一个cdn，Resolve host, address 和 key, 可以直接放进(Keep)LiveWS/TCP设置
+选一个 cdn，Resolve host, address 和 key, 可以直接放进(Keep)LiveWS 设置
 
 ```typescript
-const { getConf } = require('bilibili-live-ws')
+import { getConf } from "bilibili-live-danmaku";
 
-getConf(roomid)
+getConf(roomid);
 // Return
 Promise<{
-    key: string;
-    host: string;
-    address: string;
-}>
+  key: string;
+  host: string;
+  address: string;
+}>;
 ```
 
 ### getRoomid(short)
@@ -229,66 +202,8 @@ Promise<{
 通过短房间号获取长房间号
 
 ```typescript
-const { getRoomid } = require('bilibili-live-ws')
+import { getRoomid } from "bilibili-live-danmaku";
 
-getRoomid(255)
+getRoomid(255);
 // Return Promise<number>: 48743
 ```
-
-<hr>
-
-### Keep和无Keep的区别
-
-KeepLiveWS 和 KeepLiveTCP 有断线重新连接的功能
-
-#### new KeepLiveWS(roomid [, { address, protover, key }])
-
-#### new KeepLiveTCP(roomid [, { host, port, protover, key }])
-
-所有上方的API都是一样的, 只不过会有以下微小的区别
-
-* 收到error或者close事件的时候并不代表连接关闭, 必须要手动调用`live.close()`来关闭连接
-* 内部的连接对象(`LiveWS`/`LiveTCP`)在`live.connection`中
-* 内部的连接关闭了之后, 如果不是因为`live.close()`关闭, 会在100毫秒之后自动打开一个新的连接。
-  * 这个100毫秒可以通过改变`live.interval`来设置
-* 内部的boolean, `live.closed`, 用于判断是否是因为`live.close()`关闭。
-
-<hr>
-
-### LiveWS 和 LiveTCP 的区别
-
-#### LiveWS.ws
-
-LiveWS 内部 WebSocket 对象，需要时可以直接操作
-
-Doc: <https://github.com/websockets/ws/blob/master/doc/ws.md#class-websocket>
-
-#### LiveTCP.socket
-
-LiveTCP 内部 TCP Socket 对象，需要时可以直接操作
-
-Doc: <https://nodejs.org/api/net.html#net_class_net_socket>
-
-#### LiveTCP.buffer
-
-LiveTCP内部TCP流的Buffer缓冲区，有不完整的包
-
-#### LiveTCP.splitBuffer()
-
-处理LiveTCP内部TCP流的Buffer缓冲区，把其中完整的包交给decoder处理
-
-### BenchMark 简单对比
-
-在连接了640个直播间后过了一分钟左右(@2.0.0)
-
-|          | LiveWS (wss) | LiveWS (ws) | LiveTCP |
-| -------- | ------------ | ----------- | ------- |
-| 内存占用 | 63 MB        | 26 MB       | 18 MB   |
-
-<hr>
-
-参考资料: <https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md>
-
-# 贡献
-
-欢迎Issue和Pull Request！

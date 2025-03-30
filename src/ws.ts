@@ -1,61 +1,140 @@
-import { EventEmitter } from 'events'
-import { Agent } from 'http'
-import IsomorphicWebSocket from 'isomorphic-ws'
+import { LiveOptions, Live, LiveEventMap, DataEvent } from "./live";
 
-import { Inflates } from './buffer'
-import { LiveOptions, Live } from './common'
+export type WSOptions = LiveOptions & { address?: string };
 
-export type WSOptions = LiveOptions & { address?: string, agent?: Agent }
+export class LiveWS extends Live {
+  ws: WebSocket;
+  constructor(
+    roomid: number,
+    {
+      address = "wss://broadcastlv.chat.bilibili.com/sub",
+      ...options
+    }: WSOptions = {}
+  ) {
+    const ws = new WebSocket(address);
+    const send = (data: Uint8Array) => {
+      if (ws.readyState === 1) {
+        ws.send(data);
+      }
+    };
+    const close = () => this.ws.close();
 
-export const isNode = !!IsomorphicWebSocket.Server
+    super(roomid, { send, close, ...options });
 
-class WebSocket extends EventEmitter {
-  ws: IsomorphicWebSocket
+    ws.addEventListener("open", (e) => this.dispatchEvent(e));
+    ws.addEventListener("message", (e) => this.dispatchEvent(e));
+    ws.addEventListener("close", (e) => this.dispatchEvent(e));
+    ws.addEventListener("error", (e) => {
+      this.close();
+      this.dispatchEvent(e);
+    });
 
-  constructor(address: string, inflates: Inflates, ...args: any[]) {
-    super()
-
-    const ws = new IsomorphicWebSocket(address, ...(isNode ? args : []))
-    this.ws = ws
-
-    ws.onopen = () => this.emit('open')
-    ws.onmessage = isNode ? ({ data }) => this.emit('message', data) : async ({ data }) => this.emit('message', inflates.Buffer.from(await new Response(data as unknown as InstanceType<typeof Blob>).arrayBuffer()))
-    ws.onerror = () => this.emit('error')
-    ws.onclose = () => this.emit('close')
-  }
-
-  get readyState() {
-    return this.ws.readyState
-  }
-
-  send(data: Buffer) {
-    this.ws.send(data)
-  }
-
-  close(code?: number, data?: string) {
-    this.ws.close(code, data)
+    this.ws = ws;
   }
 }
 
-export class LiveWSBase extends Live {
-  ws: InstanceType<typeof WebSocket>
+export class KeepLiveWS extends EventTarget implements LiveWS {
+  readonly roomid: number;
+  readonly options: WSOptions;
+  closed: boolean;
+  interval: number;
+  timeout: number;
+  connection: LiveWS;
 
-  constructor(inflates: Inflates, roomid: number, { address = 'wss://broadcastlv.chat.bilibili.com/sub', agent, ...options }: WSOptions = {}) {
-    const ws = new WebSocket(address, inflates, { agent })
-    const send = (data: Buffer) => {
-      if (ws.readyState === 1) {
-        ws.send(data)
-      }
-    }
-    const close = () => this.ws.close()
-
-    super(inflates, roomid, { send, close, ...options })
-
-    ws.on('open', (...params) => this.emit('open', ...params))
-    ws.on('message', data => this.emit('message', data as Buffer))
-    ws.on('close', (code, reason) => this.emit('close', code, reason))
-    ws.on('error', error => this.emit('_error', error))
-
-    this.ws = ws
+  constructor(roomid: number, options: WSOptions = {}) {
+    super();
+    this.roomid = roomid;
+    this.options = options;
+    this.closed = false;
+    this.interval = 100;
+    this.timeout = 45 * 1000;
+    this.connection = new LiveWS(roomid, options);
+    this.connect(false);
   }
+
+  connect(reconnect = true) {
+    if (reconnect) {
+      this.connection.close();
+      this.connection = new LiveWS(this.roomid, this.options);
+    }
+    const connection = this.connection;
+
+    let timeout = setTimeout(() => {
+      connection.close();
+      connection.dispatchEvent(new Event("timeout"));
+    }, this.timeout);
+
+    connection.addEventListener("event", (e) => {
+      this.dispatchEvent(e.event);
+    });
+
+    connection.addEventListener("close", () => {
+      if (!this.closed) {
+        setTimeout(() => this.connect(), this.interval);
+      }
+    });
+
+    connection.addEventListener("heartbeat", () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        connection.close();
+        connection.dispatchEvent(new Event("timeout"));
+      }, this.timeout);
+    });
+
+    connection.addEventListener("close", () => {
+      clearTimeout(timeout);
+    });
+  }
+
+  get online() {
+    return this.connection.online;
+  }
+
+  get ws() {
+    return this.connection.ws;
+  }
+
+  get live() {
+    return this.connection.live;
+  }
+
+  close() {
+    this.closed = true;
+    this.connection.close();
+  }
+
+  heartbeat() {
+    return this.connection.heartbeat();
+  }
+
+  getOnline() {
+    return this.connection.getOnline();
+  }
+
+  send(data: Uint8Array) {
+    return this.connection.send(data);
+  }
+}
+
+export interface KeepLiveWS {
+  addEventListener<K extends keyof LiveEventMap>(
+    type: K,
+    listener: (ev: LiveEventMap[K]) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+  addEventListener<T>(
+    type: string,
+    listener: (ev: DataEvent<T>) => any,
+    options?: boolean | AddEventListenerOptions
+  ): void;
+
+  dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): boolean;
+  dispatchEvent<T>(event: DataEvent<T>): boolean;
+
+  removeEventListener(
+    type: string,
+    listener: EventListenerOrEventListenerObject,
+    options?: boolean | EventListenerOptions
+  ): void;
 }

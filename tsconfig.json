@@ -2,18 +2,14 @@
   "compilerOptions": {
     "target": "es2020",
     "lib": ["es2020", "dom"],
-    "module": "commonjs",
+    "module": "ESNext",
     "noImplicitAny": true,
     "declaration": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "rootDir": "./src",
+    "outDir": "dist"
   },
-  "include": [
-    "src"
-  ],
-  "files": [
-    "index.ts",
-    "browser.ts"
-  ]
+  "include": ["src"]
 }

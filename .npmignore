@@ -9,7 +9,11 @@ md/
 
 test.js
 
-**/*.ts
-!**/*.d.ts
 test/**/*
+src/**/*
 .github
+
+*.tsbuildinfo
+
+package.lock.json
+yarn.lock

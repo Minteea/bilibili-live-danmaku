@@ -1,14 +1,15 @@
 {
-  "name": "bilibili-live-ws",
-  "version": "6.3.1",
-  "description": "Bilibili Live WebSocket/TCP API",
-  "type": "commonjs",
-  "main": "index.js",
+  "name": "bilibili-live-danmaku",
+  "version": "0.6.3",
+  "description": "Bilibili Live WebSocket API",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "browser": "browser.js",
   "scripts": {
     "test": "npm run clear; npm run unit",
     "unit": "nyc mocha --reporter=landing -r ts-node/register test/test.ts",
-    "clear": "rm index.js index.d.ts browser.js browser.d.ts src/*.js src/*.d.ts;exit 0",
+    "clear": "rimraf ./dist",
     "tsc": "tsc -b",
     "build": "npm run clear && npm run tsc"
   },
@@ -21,35 +22,26 @@
     "api",
     "websocket",
     "live",
-    "ws",
-    "tcp"
+    "ws"
   ],
-  "author": "simon3000 <simon3000@163.com>",
+  "author": "Minteea <minteea@qq.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/simon300000/bilibili-live-ws/issues"
   },
   "homepage": "https://github.com/simon300000/bilibili-live-ws#readme",
-  "dependencies": {
-    "array-flat-polyfill": "^1.0.1",
-    "isomorphic-ws": "^5.0.0",
-    "ws": "^8.2.3"
-  },
   "devDependencies": {
     "@types/chai": "^4.2.8",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.14.0",
     "@types/pako": "^2.0.0",
-    "@types/ws": "^8.2.0",
     "chai": "^4.2.0",
     "mocha": "^10.2.0",
     "nyc": "^15.0.0",
+    "rimraf": "^6.0.1",
     "ts-node": "^10.3.0",
-    "typescript": "^4.4.4"
+    "typescript": "^5.8.2"
   },
   "peerDependencies": {
-    "buffer": "^6.0.3",
-    "events": "^3.3.0",
     "pako": "^2.0.4"
   }
 }
