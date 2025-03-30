@@ -11,7 +11,9 @@
     "unit": "nyc mocha --reporter=landing -r ts-node/register test/test.ts",
     "clear": "rimraf ./dist",
     "tsc": "tsc -b",
-    "build": "npm run clear && npm run tsc"
+    "build": "npm run clear && npm run tsc",
+    "prepack": "npm run build",
+    "postpack": "npm run clear"
   },
   "repository": {
     "type": "git",
