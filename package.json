@@ -17,7 +17,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/simon300000/bilibili-live-ws.git"
+    "url": "git+https://github.com/Minteea/bilibili-live-danmaku.git"
   },
   "keywords": [
     "bilibili",
@@ -29,9 +29,9 @@
   "author": "Minteea <minteea@qq.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/simon300000/bilibili-live-ws/issues"
+    "url": "https://github.com/Minteea/bilibili-live-danmaku/issues"
   },
-  "homepage": "https://github.com/simon300000/bilibili-live-ws#readme",
+  "homepage": "https://github.com/Minteea/bilibili-live-danmaku#readme",
   "devDependencies": {
     "@types/chai": "^4.2.8",
     "@types/mocha": "^10.0.1",
