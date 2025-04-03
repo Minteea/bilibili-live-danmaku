@@ -5,10 +5,8 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "browser": "browser.js",
   "scripts": {
     "test": "npm run clear; npm run unit",
-    "unit": "nyc mocha --reporter=landing -r ts-node/register test/test.ts",
     "clear": "rimraf ./dist",
     "tsc": "tsc -b",
     "build": "npm run clear && npm run tsc",
@@ -33,17 +31,12 @@
   },
   "homepage": "https://github.com/Minteea/bilibili-live-danmaku#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.8",
-    "@types/mocha": "^10.0.1",
     "@types/pako": "^2.0.0",
-    "chai": "^4.2.0",
-    "mocha": "^10.2.0",
-    "nyc": "^15.0.0",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.3.0",
+    "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
-  "peerDependencies": {
-    "pako": "^2.0.4"
+  "dependencies": {
+    "pako": "^2.1.0"
   }
 }

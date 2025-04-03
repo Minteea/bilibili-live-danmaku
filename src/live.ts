@@ -1,11 +1,10 @@
-import { encoder, decoder } from "./buffer";
-import { LiveWS } from "./ws";
+import { encoder, decoder, JoinPack } from "./buffer";
 
 export type LiveOptions = {
   protover?: 1 | 2 | 3;
-  key?: string;
   authBody?: any;
   uid?: number;
+  key?: string;
   buvid?: string;
 };
 
@@ -129,21 +128,15 @@ export class Live extends EventTarget {
         }
         this.send(authBody);
       } else {
-        const hi: {
-          uid: number;
-          roomid: number;
-          protover: number;
-          platform: string;
-          type: number;
-          key?: string;
-          buvid?: string;
-        } = { uid: uid, roomid, protover, platform: "web", type: 2 };
-        if (key) {
-          hi.key = key;
-        }
-        if (buvid) {
-          hi.buvid = buvid;
-        }
+        const hi: JoinPack = {
+          uid: uid,
+          roomid,
+          protover,
+          platform: "web",
+          type: 2,
+          key,
+          buvid,
+        };
         const buf = encoder("join", hi);
         this.send(buf);
       }

@@ -2,6 +2,16 @@ import "array-flat-polyfill";
 import { inflate } from "pako";
 import { brotliDecompress } from "./inflate";
 
+export interface JoinPack {
+  uid: number;
+  roomid: number;
+  protover: number;
+  platform: string;
+  type: number;
+  key?: string;
+  buvid?: string;
+}
+
 // https://github.com/lovelyyoshino/Bilibili-Live-API/blob/master/API.WebSocket.md
 
 const cutBuffer = (buffer: Uint8Array) => {

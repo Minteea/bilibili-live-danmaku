@@ -2,9 +2,9 @@
 
 [![npm](https://img.shields.io/npm/v/bilibili-live-danmaku.svg)](https://www.npmjs.com/package/bilibili-live-danmaku)
 
-Bilibili 直播 WebSocket API，支持浏览器和服务端 JS 运行时
+Bilibili 直播 WebSocket API，支持浏览器和服务端 JS 运行环境
 
-> 本项目基于[github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)的项目进行改进，使用符合现有 Web 标准的 API 和 ES 规范进行代码重构，满足不同 JS 运行时的可移植性
+> 本项目基于[github:simon300000/bilibili-live-ws](https://github.com/simon300000/bilibili-live-ws)的项目进行改进，使用符合现有 Web 标准的 API 和 ES 规范进行代码重构，满足不同 JS 环境下的可移植性
 
 ## API
 
@@ -20,10 +20,10 @@ const live = new KeepLiveWS(roomid);
 ```javascript
 const live = new LiveWS(14275133);
 
-live.on("open", () => console.log("Connection is established"));
+live.addEventListener("open", () => console.log("Connection is established"));
 // Connection is established
-live.on("welcome", () => {
-  live.on("heartbeat", console.log);
+live.addEventListener("welcome", () => {
+  live.addEventListener("heartbeat", console.log);
   // 74185
 });
 ```
