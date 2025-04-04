@@ -52,7 +52,6 @@ export async function requestBuvidCookie(
   options?: FetchOptions
 ): Promise<Record<"buvid3" | "buvid4", string>> {
   const res = await customFetch(options, BUVID_INIT_URL, {});
-  console.log(res);
   return getSetCookie(res.headers);
 }
 

@@ -40,8 +40,7 @@ export class DataEvent<T> extends Event {
 
 export class Live extends EventTarget {
   roomid: number;
-  online: number;
-  live: boolean;
+  connected: boolean;
   closed: boolean;
   timeout: number;
 
@@ -66,8 +65,7 @@ export class Live extends EventTarget {
 
     super();
     this.roomid = roomid;
-    this.online = 0;
-    this.live = false;
+    this.connected = false;
     this.closed = false;
     this.timeout = setTimeout(() => {}, 0);
 
@@ -80,21 +78,18 @@ export class Live extends EventTarget {
     this.addEventListener("message", async (e: MessageEvent) => {
       try {
         const buffer = new Uint8Array(
-          await new Response(
-            e.data as unknown as InstanceType<typeof Blob>
-          ).arrayBuffer()
+          await new Response(e.data as Blob).arrayBuffer()
         );
         const packs = decoder(buffer);
         packs.forEach(({ data, protocol, operation }) => {
           if (operation === WSOperation.CONNECT_SUCCESS) {
-            this.live = true;
+            this.connected = true;
             this.dispatchEvent(
               new DataEvent("CONNECT_SUCCESS", { data, protocol, operation })
             );
             this.send(encoder(WSOperation.HEARTBEAT));
           }
           if (operation === WSOperation.HEARTBEAT_REPLY) {
-            this.online = data;
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30);
             this.dispatchEvent(
@@ -154,13 +149,6 @@ export class Live extends EventTarget {
 
   heartbeat() {
     this.send(encoder(WSOperation.HEARTBEAT));
-  }
-
-  getOnline() {
-    this.heartbeat();
-    return new Promise<number>((resolve) =>
-      this.addEventListener("HEARTBEAT_REPLY", (e) => resolve(e.data))
-    );
   }
 }
 

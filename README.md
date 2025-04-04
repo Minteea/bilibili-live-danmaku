@@ -22,8 +22,8 @@ const live = new LiveWS(14275133);
 
 live.addEventListener("open", () => console.log("Connection is established"));
 // Connection is established
-live.addEventListener("welcome", () => {
-  live.addEventListener("heartbeat", console.log);
+live.addEventListener("CONNECT_SUCCESS", () => {
+  live.addEventListener("HEARTBEAT_REPLY", ({ data }) => console.log(data));
   // 74185
 });
 ```
@@ -60,21 +60,19 @@ live.addEventListener("welcome", () => {
 
 - `authBody` 可选, 可以和 <https://open-live.bilibili.com/document/> 配合使用, 会覆盖掉 `protover` `roomid` `key` `uid` `buvid`. 如果是 `object` 会按照握手包编码，如果是 `string`/`Uint8Array` 会直接发送
 
-#### live.on('open')
+#### live.addEventListener('open')
 
 WebSocket 连接上了
 
-#### live.on('welcome')
+#### live.addEventListener('CONNECT_SUCCESS')
 
 成功登入房间
 
-#### live.on('heartbeat', ({data: online}) => ...)
+#### live.addEventListener('HEARTBEAT_REPLY')
 
 收到服务器心跳包，会在 30 秒之后自动发送心跳包。
 
-- `online` 当前人气值
-
-#### live.on('msg', ({data}) => ...)
+#### live.addEventListener('MESSAGE', ({data}) => ...)
 
 - `data` 收到信息/弹幕/广播等
 
@@ -127,7 +125,7 @@ WebSocket 连接上了
   }
   ```
 
-#### live.on(cmd, ({data}) => ...)
+#### live.addEventListener(cmd, ({data}) => ...)
 
 用法如上，只不过只会收到特定 cmd 的 Event。
 
@@ -151,11 +149,11 @@ WebSocket 连接上了
 }
 ```
 
-#### live.on('close')
+#### live.addEventListener('close')
 
 连接关闭事件
 
-#### live.on('error', (e) => ...)
+#### live.addEventListener('error', (e) => ...)
 
 连接 error 事件，连接同时也会关闭
 
@@ -169,26 +167,22 @@ WebSocket 连接上了
 
 关闭 WebSocket 连接。
 
-#### live.getOnline()
-
-立即调用 `live.heartbeat()` 刷新人气数值，并且返回 Promise，resolve 人气刷新后数值
-
 #### live.on('message')
 
-WebSocket 收到的 Raw Buffer（不推荐直接使用）
+WebSocket 收到的 MessageEvent 对象，包含原始 Blob 数据（不推荐直接使用）
 
 #### live.send(buffer)
 
 使用 WebSocket 发送信息
 
-### getConf(roomid)
+### getLiveConfig(roomid)
 
 选一个 cdn，Resolve host, address 和 key, 可以直接放进(Keep)LiveWS 设置
 
 ```typescript
-import { getConf } from "bilibili-live-danmaku";
+import { getLiveConfig } from "bilibili-live-danmaku";
 
-getConf(roomid);
+getLiveConfig(roomid);
 // Return
 Promise<{
   key: string;

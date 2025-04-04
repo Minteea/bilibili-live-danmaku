@@ -103,16 +103,12 @@ export class KeepLiveWS extends EventTarget implements LiveWS {
     });
   }
 
-  get online() {
-    return this.connection.online;
-  }
-
   get ws() {
     return this.connection.ws;
   }
 
-  get live() {
-    return this.connection.live;
+  get connected() {
+    return this.connection.connected;
   }
 
   close() {
@@ -122,10 +118,6 @@ export class KeepLiveWS extends EventTarget implements LiveWS {
 
   heartbeat() {
     return this.connection.heartbeat();
-  }
-
-  getOnline() {
-    return this.connection.getOnline();
   }
 
   send(data: Uint8Array) {
