@@ -11,7 +11,7 @@ const DANMAKU_SERVER_CONF_URL =
 const UID_INIT_URL = "https://api.bilibili.com/x/web-interface/nav";
 
 /** API-获取BUVID */
-const BUVID_INIT_URL = "https://data.bilibili.com/v/";
+const BUVID_INIT_URL = "https://www.bilibili.com/";
 
 const ROOM_INIT_URL =
   "https://api.live.bilibili.com/xlive/web-room/v1/index/getInfoByRoom";
@@ -52,6 +52,7 @@ export async function requestBuvidCookie(
   options?: FetchOptions
 ): Promise<Record<"buvid3" | "buvid4", string>> {
   const res = await customFetch(options, BUVID_INIT_URL, {});
+  console.log(res);
   return getSetCookie(res.headers);
 }
 

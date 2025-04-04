@@ -321,3 +321,5 @@ export namespace MessageData {
     | ROOM_CHANGE
     | ANCHOR_LOT_START;
 }
+
+export type MessageData = MessageData.All;

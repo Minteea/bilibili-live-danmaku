@@ -1,4 +1,5 @@
-import { encoder, decoder, JoinPack } from "./buffer";
+import { encoder, decoder, JoinPack, WSOperation } from "./buffer";
+import { MessageData } from "./types";
 
 export type LiveOptions = {
   protover?: 1 | 2 | 3;
@@ -77,54 +78,52 @@ export class Live extends EventTarget {
     };
 
     this.addEventListener("message", async (e: MessageEvent) => {
-      const buffer = new Uint8Array(
-        await new Response(
-          e.data as unknown as InstanceType<typeof Blob>
-        ).arrayBuffer()
-      );
-      const packs = await decoder(buffer);
-      packs.forEach(({ type, data, protocol, operation }) => {
-        if (type === "welcome") {
-          this.live = true;
-          this.dispatchEvent(
-            new DataEvent("welcome", { data, protocol, operation })
-          );
-          this.send(encoder("heartbeat"));
-        }
-        if (type === "heartbeat") {
-          this.online = data;
-          clearTimeout(this.timeout);
-          this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30);
-          this.dispatchEvent(
-            new DataEvent("heartbeat", { data, protocol, operation })
-          );
-        }
-        if (type === "message") {
-          this.dispatchEvent(
-            new DataEvent("msg", { data, protocol, operation })
-          );
-          const cmd = data.cmd || (data.msg && data.msg.cmd);
-          if (cmd) {
-            if (cmd.includes("DANMU_MSG")) {
-              this.dispatchEvent(
-                new DataEvent("DANMU_MSG", { data, protocol, operation })
-              );
-            } else {
+      try {
+        const buffer = new Uint8Array(
+          await new Response(
+            e.data as unknown as InstanceType<typeof Blob>
+          ).arrayBuffer()
+        );
+        const packs = decoder(buffer);
+        packs.forEach(({ data, protocol, operation }) => {
+          if (operation === WSOperation.CONNECT_SUCCESS) {
+            this.live = true;
+            this.dispatchEvent(
+              new DataEvent("CONNECT_SUCCESS", { data, protocol, operation })
+            );
+            this.send(encoder(WSOperation.HEARTBEAT));
+          }
+          if (operation === WSOperation.HEARTBEAT_REPLY) {
+            this.online = data;
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30);
+            this.dispatchEvent(
+              new DataEvent("HEARTBEAT_REPLY", { data, protocol, operation })
+            );
+          }
+          if (operation === WSOperation.MESSAGE) {
+            this.dispatchEvent(
+              new DataEvent("MESSAGE", { data, protocol, operation })
+            );
+            const cmd = data.cmd || data.msg?.cmd;
+            if (cmd) {
               this.dispatchEvent(
                 new DataEvent(cmd, { data, protocol, operation })
               );
             }
+          } else {
+            new DataEvent("UNKNOWN", { data, protocol, operation });
           }
-        } else {
-          new DataEvent("unknown", { data, protocol, operation });
-        }
-      });
+        });
+      } catch (error) {
+        this.dispatchEvent(new ErrorEvent("error:decode", { error }));
+      }
     });
 
     this.addEventListener("open", () => {
       if (authBody) {
         if (typeof authBody === "object") {
-          authBody = encoder("join", authBody);
+          authBody = encoder(WSOperation.USER_AUTHENTICATION, authBody);
         }
         this.send(authBody);
       } else {
@@ -137,7 +136,7 @@ export class Live extends EventTarget {
           key,
           buvid,
         };
-        const buf = encoder("join", hi);
+        const buf = encoder(WSOperation.USER_AUTHENTICATION, hi);
         this.send(buf);
       }
     });
@@ -154,23 +153,63 @@ export class Live extends EventTarget {
   }
 
   heartbeat() {
-    this.send(encoder("heartbeat"));
+    this.send(encoder(WSOperation.HEARTBEAT));
   }
 
   getOnline() {
     this.heartbeat();
     return new Promise<number>((resolve) =>
-      this.addEventListener("heartbeat", (e) => resolve(e.data))
+      this.addEventListener("HEARTBEAT_REPLY", (e) => resolve(e.data))
     );
   }
 }
 
 export interface LiveEventMap extends WebSocketEventMap {
+  /** 触发事件 */
   event: EventEvent<any>;
-  welcome: DataEvent<any>;
-  heartbeat: DataEvent<any>;
-  msg: DataEvent<any>;
+  /** 超时 */
   timeout: Event;
+  /** 解码发生错误 */
+  "error:decode": ErrorEvent;
+
+  /** 连接 */
+  CONNECT_SUCCESS: DataEvent<any>;
+  /** 收到心跳包回复 */
+  HEARTBEAT_REPLY: DataEvent<any>;
+  /** 收到消息 */
+  MESSAGE: DataEvent<MessageData>;
+
+  /** 弹幕消息 */
+  DANMU_MSG: DataEvent<MessageData.DANMU_MSG>;
+  /** 互动消息 */
+  INTERACT_WORD: DataEvent<MessageData.INTERACT_WORD>;
+  /** 礼物消息 */
+  SEND_GIFT: DataEvent<MessageData.SEND_GIFT>;
+  /** 开通舰长 */
+  GUARD_BUY: DataEvent<MessageData.GUARD_BUY>;
+  /** SC消息 */
+  SUPER_CHAT_MESSAGE: DataEvent<MessageData.SUPER_CHAT_MESSAGE>;
+  /** 禁言 */
+  ROOM_BLOCK_MSG: DataEvent<MessageData.ROOM_BLOCK_MSG>;
+
+  /** 天选时刻抽奖 */
+  ANCHOR_LOT_START: DataEvent<MessageData.ANCHOR_LOT_START>;
+
+  /** 观看人数变化 */
+  WATCHED_CHANGE: DataEvent<MessageData.WATCHED_CHANGE>;
+  /** 点赞数变化 */
+  LIKE_INFO_V3_UPDATE: DataEvent<MessageData.LIKE_INFO_V3_UPDATE>;
+  /** 在线人数变化 */
+  ONLINE_RANK_COUNT: DataEvent<MessageData.ONLINE_RANK_COUNT>;
+  /** 房间信息变化 */
+  ROOM_CHANGE: DataEvent<MessageData.ROOM_CHANGE>;
+
+  /** 开播 */
+  LIVE: DataEvent<MessageData.LIVE>;
+  /** 直播被切断 */
+  CUT_OFF: DataEvent<MessageData.CUT_OFF>;
+  /** 下播 */
+  PREPARING: DataEvent<MessageData.PREPARING>;
 }
 
 export interface Live {
@@ -179,14 +218,8 @@ export interface Live {
     listener: (ev: LiveEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions
   ): void;
-  addEventListener<T>(
-    type: string,
-    listener: (ev: DataEvent<T>) => any,
-    options?: boolean | AddEventListenerOptions
-  ): void;
 
   dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): void;
-  dispatchEvent<T>(event: DataEvent<T>): void;
 
   removeEventListener(
     type: string,

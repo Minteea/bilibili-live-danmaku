@@ -1,7 +1,7 @@
 export class Cookies<K extends string = string> extends Map<K, string> {
   constructor(cookie?: string | Iterable<[K, string]> | Record<K, string>) {
     if (typeof cookie == "string") {
-      cookie = splitCookieString(cookie) as [K, string][];
+      cookie = cookie ? (splitCookieString(cookie) as [K, string][]) : [];
     } else if (typeof cookie == "object" && !(Symbol.iterator in cookie)) {
       cookie = keyValuePairToArray(cookie);
     }

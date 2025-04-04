@@ -4,7 +4,7 @@
 .travis.yml
 .nyc_output/**/*
 
-examples/
+demo/
 md/
 
 test.js

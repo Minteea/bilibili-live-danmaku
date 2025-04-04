@@ -1,4 +1,5 @@
 import { LiveOptions, Live, LiveEventMap, DataEvent } from "./live";
+import { ErrorEvent, CloseEvent } from "./ponyfill/event";
 
 export type WSOptions = LiveOptions & { address?: string };
 
@@ -21,18 +22,25 @@ export class LiveWS extends Live {
 
     super(roomid, { send, close, ...options });
 
-    ws.addEventListener("open", (e) => this.dispatchEvent(e));
-    ws.addEventListener("message", (e) => this.dispatchEvent(e));
-    ws.addEventListener("close", (e) => this.dispatchEvent(e));
+    ws.addEventListener("open", (e) =>
+      this.dispatchEvent(new Event(e.type, e))
+    );
+    ws.addEventListener("message", (e) =>
+      this.dispatchEvent(new MessageEvent(e.type, e as any))
+    );
+    ws.addEventListener("close", (e) =>
+      this.dispatchEvent(new CloseEvent(e.type, e))
+    );
     ws.addEventListener("error", (e) => {
       this.close();
-      this.dispatchEvent(e);
+      this.dispatchEvent(new ErrorEvent(e.type, e));
     });
 
     this.ws = ws;
   }
 }
 
+/** @deprecated */
 export class KeepLiveWS extends EventTarget implements LiveWS {
   readonly roomid: number;
   readonly options: WSOptions;
@@ -65,25 +73,33 @@ export class KeepLiveWS extends EventTarget implements LiveWS {
     }, this.timeout);
 
     connection.addEventListener("event", (e) => {
-      this.dispatchEvent(e.event);
+      const event = e.event;
+      if (event instanceof DataEvent) {
+        this.dispatchEvent(new DataEvent(event.type, event));
+      } else if (event instanceof MessageEvent) {
+        this.dispatchEvent(new MessageEvent(event.type, event as any));
+      } else if (event instanceof CloseEvent) {
+        this.dispatchEvent(new CloseEvent(event.type, event));
+      } else if (event instanceof ErrorEvent) {
+        this.dispatchEvent(new ErrorEvent(event.type, event));
+      } else {
+        this.dispatchEvent(new Event(event.type, event));
+      }
     });
 
     connection.addEventListener("close", () => {
       if (!this.closed) {
         setTimeout(() => this.connect(), this.interval);
       }
+      clearTimeout(timeout);
     });
 
-    connection.addEventListener("heartbeat", () => {
+    connection.addEventListener("HEARTBEAT_REPLY", () => {
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         connection.close();
         connection.dispatchEvent(new Event("timeout"));
       }, this.timeout);
-    });
-
-    connection.addEventListener("close", () => {
-      clearTimeout(timeout);
     });
   }
 
@@ -123,14 +139,8 @@ export interface KeepLiveWS {
     listener: (ev: LiveEventMap[K]) => any,
     options?: boolean | AddEventListenerOptions
   ): void;
-  addEventListener<T>(
-    type: string,
-    listener: (ev: DataEvent<T>) => any,
-    options?: boolean | AddEventListenerOptions
-  ): void;
 
   dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): boolean;
-  dispatchEvent<T>(event: DataEvent<T>): boolean;
 
   removeEventListener(
     type: string,

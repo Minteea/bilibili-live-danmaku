@@ -10,6 +10,7 @@
     "clear": "rimraf ./dist",
     "tsc": "tsc -b",
     "build": "npm run clear && npm run tsc",
+    "demo": "tsx ./demo/index.ts",
     "prepack": "npm run build",
     "postpack": "npm run clear"
   },
