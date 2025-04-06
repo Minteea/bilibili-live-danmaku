@@ -1,6 +1,12 @@
 import { ResponseData } from "../types/request";
 import { Cookies, getSetCookie } from "./cookie";
 
+function getError<T>(message: string, cause: T): Error {
+  const error = new Error(message);
+  (error as any).cause = cause;
+  return error;
+}
+
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.36";
 
@@ -52,6 +58,9 @@ export async function requestBuvidCookie(
   options?: FetchOptions
 ): Promise<Record<"buvid3" | "buvid4", string>> {
   const res = await customFetch(options, BUVID_INIT_URL, {});
+  if (!res.ok) {
+    throw getError("Response Error", res);
+  }
   return getSetCookie(res.headers);
 }
 
@@ -60,46 +69,67 @@ export async function requestGetInfoByRoom(
   id: number,
   options?: FetchOptions
 ): Promise<ResponseData.GetInfoByRoom> {
-  return await customFetch(options, `${ROOM_INIT_URL}?room_id=${id}`, {
+  const res = await customFetch(options, `${ROOM_INIT_URL}?room_id=${id}`, {
     method: "GET",
-  })
-    .then((response) => response.json())
-    .then((data) => data.data);
+  });
+  if (!res.ok) {
+    throw getError("Response Error", res);
+  }
+  const data = await res.json();
+  if (data.code == 0) {
+    return data.data;
+  } else throw getError("Response Data Error", data);
 }
 
 /** 获取登录用户的uid */
 export async function getLoginUid(options?: FetchOptions): Promise<number> {
-  const res = await customFetch(options, UID_INIT_URL).then((res) =>
-    res.json()
-  );
-  if (res.code == 0) {
-    return res.data.mid;
-  } else {
+  const res = await customFetch(options, UID_INIT_URL);
+  if (!res.ok) {
+    throw getError("Response Error", res);
+  }
+  const data = await res.json();
+  if (data.code == 0) {
+    return data.data.mid;
+  } else if (data.code == -101) {
     // code = -101 => 账号未登录
     return 0;
-  }
+  } else throw getError("Response Data Error", data);
 }
 
 /** 获取直播间连接配置 */
 export const getLiveConfig = async (roomid: number, options?: FetchOptions) => {
-  const result = (await customFetch(
+  const res = await customFetch(
     options,
     `${DANMAKU_SERVER_CONF_URL}?id=${roomid}`
-  ).then((w) => w.json())) as ResponseData.Wrap<ResponseData.GetDanmuInfo>;
+  );
+  if (!res.ok) {
+    throw getError("Response Error", res);
+  }
+  const data =
+    (await res.json()) as ResponseData.Wrap<ResponseData.GetDanmuInfo>;
+  if (data.code != 0) {
+    throw getError("Response Data Error", data);
+  }
   const {
     data: {
       token: key,
       host_list: [{ host }],
     },
-  } = result;
+  } = data;
   const address = `wss://${host}/sub`;
-  return { key, host, address, raw: result };
+  return { key, host, address, raw: data };
 };
 
 /** 获取roomid */
 export const getRoomid = async (short: number) => {
-  const result = await fetch(
+  const res = await fetch(
     `https://api.live.bilibili.com/room/v1/Room/mobileRoomInit?id=${short}`
-  ).then((w) => w.json());
-  return result.data.room_id;
+  );
+  if (!res.ok) {
+    throw getError("Response Error", res);
+  }
+  const data = await res.json();
+  if (data.code == 0) {
+    return data.data.room_id;
+  } else throw getError("Response Data Error", data);
 };

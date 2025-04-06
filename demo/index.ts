@@ -3,6 +3,7 @@ import {
   getLoginUid,
   LiveWS,
   requestBuvidCookie,
+  requestGetInfoByRoom,
   WSOptions,
 } from "../src";
 import { Cookies } from "../src/utils/cookie";
@@ -20,6 +21,7 @@ const config: WSOptions = await getLiveConfig(roomid, {
 });
 config.buvid = cookies.get("buvid3");
 config.uid = await getLoginUid({ cookie: cookies.toString() });
+console.log(await requestGetInfoByRoom(roomid, { cookie: cookies.toString() }));
 
 const live = new LiveWS(roomid, config);
 
