@@ -207,7 +207,7 @@ export interface Live {
     options?: boolean | AddEventListenerOptions
   ): void;
 
-  dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): void;
+  dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): boolean;
 
   removeEventListener(
     type: string,
