@@ -38,6 +38,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@floating-live/cookies": "^0.1.0",
     "pako": "^2.1.0"
   }
 }

@@ -1,5 +1,5 @@
 import { ResponseData } from "../types/request";
-import { Cookies, getSetCookie } from "./cookie";
+import { Cookies, getSetCookie } from "@floating-live/cookies";
 
 function getError<T>(message: string, cause: T): Error {
   const error = new Error(message);

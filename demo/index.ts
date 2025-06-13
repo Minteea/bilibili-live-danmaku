@@ -6,7 +6,7 @@ import {
   requestGetInfoByRoom,
   WSOptions,
 } from "../src";
-import { Cookies } from "../src/utils/cookie";
+import { Cookies } from "@floating-live/cookies";
 
 const roomid = 22603245;
 
