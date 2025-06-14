@@ -6,6 +6,7 @@
 
 demo/
 md/
+demo/process.env
 
 test.js
 

@@ -1,26 +1,41 @@
-import {
-  getLiveConfig,
-  getLoginUid,
-  LiveWS,
-  requestBuvidCookie,
-  requestGetInfoByRoom,
-  WSOptions,
-} from "../src";
-import { Cookies } from "@floating-live/cookies";
+import { BilibiliApiClient, LiveWS, parseLiveConfig, WSOptions } from "../src";
 
-const roomid = 22603245;
+try {
+  const dotenv = await import("dotenv");
+  dotenv.config().parsed;
+} catch (e) {
+  console.warn("不支持dotenv");
+}
 
+function getEnv(key: string) {
+  return (
+    globalThis.process?.env?.[key] ||
+    globalThis.Deno?.env?.get(key) ||
+    undefined
+  );
+}
+
+const roomid = 26815357;
+
+// 设置 cookie
+// 在根目录创建一个 .env 文件，内容为 API_CLIENT_COOKIE="xxxxxx" 即可设置cookie
 // 注：用户未登录的情况下，弹幕用户名会被打码。设置已登录用户的cookie可解除限制。注意不要将cookie泄露给他人
-const cookie = "";
+const cookie = getEnv("API_CLIENT_COOKIE") || "";
 
-const cookies = new Cookies(cookie);
-
-if (!cookies.get("buvid3")) cookies.append(await requestBuvidCookie());
-const config: WSOptions = await getLiveConfig(roomid, {
-  cookie: cookies.toString(),
+/** 创建api客户端，以便模拟B站请求 */
+const apiClient = new BilibiliApiClient({
+  cookie,
 });
-config.buvid = cookies.get("buvid3");
-config.uid = await getLoginUid({ cookie: cookies.toString() });
+
+// 访问主页，获取必要cookie
+if (!apiClient.cookies.get("buvid3")) await apiClient.wwwBilibili();
+
+// 获取ws配置
+const config: WSOptions = parseLiveConfig(
+  (await apiClient.xliveGetDanmuInfo({ id: roomid })).data
+);
+config.buvid = apiClient.cookies.get("buvid3");
+config.uid = Number.parseInt(apiClient.cookies.get("DedeUserID")) || 0;
 
 const live = new LiveWS(roomid, config);
 

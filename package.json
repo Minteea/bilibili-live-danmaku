@@ -32,13 +32,16 @@
   },
   "homepage": "https://github.com/Minteea/bilibili-live-danmaku#readme",
   "devDependencies": {
+    "@types/md5": "^2.3.5",
     "@types/pako": "^2.0.0",
+    "dotenv": "^16.5.0",
     "rimraf": "^6.0.1",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {
     "@floating-live/cookies": "^0.1.0",
+    "md5": "^2.3.0",
     "pako": "^2.1.0"
   }
 }
