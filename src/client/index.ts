@@ -2,6 +2,7 @@ import { Cookies } from "@floating-live/cookies";
 import {
   DataApiGenWebTicket,
   DataXliveGetInfoByRoom,
+  DataXliveGetRoomBaseInfo,
   ResponseDataRoot,
 } from "./types";
 import { hmacSHA256 } from "./utils/crypto";
@@ -42,6 +43,12 @@ export class Client {
         ...init?.headers,
       },
     });
+  }
+
+  setCookie(
+    cookie: string | Iterable<[string, string]> | Record<string, string>
+  ) {
+    this.cookies = new Cookies(cookie);
   }
 }
 
@@ -117,14 +124,17 @@ export class BilibiliApiClient extends Client {
     this.cookies.setFromHeaders(res.headers);
   }
 
+  /** 获取直播间基本信息 */
   async xliveGetRoomBaseInfo(params: { room_ids: number[]; req_biz?: string }) {
-    const url = new URL("https://api.live.bilibili.com/room/v1/Room/room_init");
+    const url = new URL(
+      "https://api.live.bilibili.com/xlive/web-room/v1/index/getRoomBaseInfo"
+    );
     url.search = params.room_ids.map((r) => `room_ids=${r}`).join("&");
     url.searchParams.set("req_biz", params.req_biz || "video");
     const res = await this.request(url, {
       method: "GET",
     });
-    return unwrapRequestData<any>(res);
+    return unwrapRequestData<DataXliveGetRoomBaseInfo>(res);
   }
   async liveRoomGetInfo() {}
 
