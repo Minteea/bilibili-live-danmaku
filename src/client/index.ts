@@ -136,7 +136,6 @@ export class BilibiliApiClient extends Client {
     });
     return unwrapRequestData<DataXliveGetRoomBaseInfo>(res);
   }
-  async liveRoomGetInfo() {}
 
   /** 获取房间页初始化信息 */
   async liveRoomInit(params: { id: number }) {
@@ -146,17 +145,6 @@ export class BilibiliApiClient extends Client {
       method: "GET",
     });
     return unwrapRequestData<any>(res);
-  }
-
-  async xliveGetRoomPlayInfo() {
-    throw new NotImplementedError();
-  }
-
-  async wwwCorrespond() {
-    throw new NotImplementedError();
-  }
-  async wwwLive() {
-    throw new NotImplementedError();
   }
 
   /** 获取直播间主播信息 */
@@ -169,10 +157,6 @@ export class BilibiliApiClient extends Client {
       method: "GET",
     });
     return unwrapRequestData<any>(res);
-  }
-
-  async liveRoomPlayInfo() {
-    throw new NotImplementedError();
   }
 
   /** 获取信息流认证秘钥 */
@@ -216,13 +200,5 @@ export class BilibiliApiClient extends Client {
     const imgKey = extractImageId(imgUrl);
     const subKey = extractImageId(subUrl);
     return getWbiUrl(url as any, imgKey, subKey);
-  }
-
-  async xapiFingerSpi() {
-    throw new NotImplementedError();
-  }
-
-  async xapiGetbuvid() {
-    throw new NotImplementedError();
   }
 }
