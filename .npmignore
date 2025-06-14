@@ -6,7 +6,8 @@
 
 demo/
 md/
-demo/process.env
+.env
+tsconfig.json
 
 test.js
 
