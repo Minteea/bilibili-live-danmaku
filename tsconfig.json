@@ -9,7 +9,10 @@
     "esModuleInterop": true,
     "strict": true,
     "rootDir": "./src",
-    "outDir": "dist"
+    "outDir": "./dist"
   },
-  "include": ["src"]
+  "include": ["src"],
+  "tsc-alias": {
+    "resolveFullPaths": true
+  }
 }
