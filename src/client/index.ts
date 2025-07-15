@@ -124,7 +124,6 @@ export class BilibiliApiClient extends Client {
   async wwwBilibili() {
     const res = await this.request("https://www.bilibili.com/");
     assertRequestOk(res);
-    console.log(res.headers);
     this.cookies.setFromHeaders(res.headers);
   }
 
@@ -227,7 +226,6 @@ export class BilibiliApiClient extends Client {
   /** 激活buvid */
   async activateBuvid(fp?: FpInfo) {
     const spiRes = (await this.xapiSpi()).data;
-    console.log(spiRes);
     const { b_4 } = spiRes;
     this.cookies.set("buvid4", encodeURIComponent(b_4));
 
