@@ -7,6 +7,16 @@ import {
 } from "./types";
 import { hmacSHA256 } from "./utils/crypto";
 import { getWbiUrl } from "./utils/wbi";
+import {
+  fpGet,
+  FpInfo,
+  generateFakeFpInfo,
+  generateRandomPngBase64,
+  getExClimbWuzhiPayload,
+} from "./utils/fingerprint";
+import { generateUuid } from "./utils/algorithm/uuid";
+import { generateLsid } from "./utils/algorithm/lsid";
+import { x64hash128 } from "./utils/algorithm/murmur3";
 export * from "./types";
 
 const DEFAULT_USER_AGENT =
@@ -65,12 +75,6 @@ export class RequestError extends Error {
     super(message);
     this.ok = ok;
     this.code = code;
-  }
-}
-
-export class NotImplementedError extends Error {
-  constructor() {
-    super("Function not implemented.");
   }
 }
 
@@ -182,10 +186,92 @@ export class BilibiliApiClient extends Client {
     url.searchParams.set("hexsign", hexsign);
     url.searchParams.set("context[ts]", timestamp.toString());
     csrf && url.searchParams.set("csrf", csrf);
-    const data = await this.request(url, { method: "POST" }).then((r) =>
-      r.json()
+    const res = await this.request(url, { method: "POST" });
+    return unwrapRequestData<DataApiGenWebTicket>(res);
+  }
+
+  async xapiSpi() {
+    const res = await this.request(
+      "https://api.bilibili.com/x/frontend/finger/spi"
     );
-    return data.data as DataApiGenWebTicket;
+    return unwrapRequestData<Record<"b_3" | "b_4", string>>(res);
+  }
+
+  async xapiExClimbWuzhi(data: { payload: string }) {
+    const res = await this.request(
+      "https://api.bilibili.com/x/internal/gaia-gateway/ExClimbWuzhi",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        credentials: "include",
+        headers: {
+          Accept: "*/*",
+          "Accept-Encoding": "gzip, deflate, br, zstd",
+          "Accept-Language": "zh-CN,zh;q=0.9",
+          "Content-Type": "application/json;charset=UTF-8",
+          Origin: "https://www.bilibili.com",
+          priority: "u=1, i",
+          Referer: "https://www.bilibili.com/",
+          "Sec-Ch-Ua": `"Microsoft Edge";v="135", "Not-A.Brand";v="8", "Chromium";v="135"`,
+          "Sec-Ch-Mobile": "?0",
+          "Sec-Ch-Platform": `"Windows"`,
+          "Sec-Ch-Dest": "empty",
+          "Sec-Ch-Mode": "cors",
+          "Sec-Fetch-Site": "same-site",
+        },
+      }
+    );
+    return unwrapRequestData<unknown>(res);
+  }
+
+  /** 激活buvid */
+  async activateBuvid(fp?: FpInfo) {
+    const spiRes = (await this.xapiSpi()).data;
+    console.log(spiRes);
+    const { b_4 } = spiRes;
+    this.cookies.set("buvid4", encodeURIComponent(b_4));
+
+    // 生成虚拟指纹信息
+    if (!fp) {
+      fp = generateFakeFpInfo({
+        canvas: generateRandomPngBase64(),
+        webgl: generateRandomPngBase64(),
+        userAgent: this.userAgent,
+        platform: "Win32",
+      });
+    }
+
+    // 获取指纹相关cookie字段
+    if (!this.cookies.get("_uuid")) {
+      this.cookies.set("_uuid", generateUuid());
+    }
+    if (!this.cookies.get("buvid_fp")) {
+      const fpString = fp
+        .map((e) => {
+          return e.value;
+        })
+        .join("");
+      this.cookies.set("buvid_fp", x64hash128(fpString, 31));
+    }
+    if (!this.cookies.get("b_lsid")) {
+      this.cookies.set("b_lsid", generateLsid());
+    }
+
+    // 生成请求payload
+    const payload = getExClimbWuzhiPayload(fp, {
+      uuid: this.cookies.get("_uuid"),
+      timestamp: Date.now().toString(),
+      browser_resolution: fpGet(fp, "availableScreenResolution").join("x"),
+      abtest: `{"b_ut":null,"home_version":"V8","in_new_ab":true,"ab_version":{"for_ai_home_version":"V8","enable_web_push":"DISABLE","ad_style_version":"NEW","enable_feed_channel":"ENABLE","enable_ai_floor_api":"DISABLE"},"ab_split_num":{"for_ai_home_version":54,"enable_web_push":10,"ad_style_version":54,"enable_feed_channel":54,"enable_ai_floor_api":137},"uniq_page_id":"${Math.floor(
+        Math.random() * 2000000000000
+      )}","is_modern":true}`,
+    });
+
+    // 激活buvid
+    const res = await this.xapiExClimbWuzhi({
+      payload: JSON.stringify(payload),
+    });
+    return res;
   }
 
   /** wbi签名 */
@@ -194,11 +280,26 @@ export class BilibiliApiClient extends Client {
   async wbiSign(url: string | URL): Promise<string | URL> {
     const extractImageId = (p: string) =>
       p.split("/").at(-1)?.split(".")[0] || "";
-    const webTicket = await this.apiGenWebTicket();
+    const webTicket = (await this.apiGenWebTicket()).data;
     const subUrl = webTicket.nav.sub;
     const imgUrl = webTicket.nav.img;
     const imgKey = extractImageId(imgUrl);
     const subKey = extractImageId(subUrl);
     return getWbiUrl(url as any, imgKey, subKey);
+  }
+
+  /** 初始化必要cookie */
+  async initCookie() {
+    await this.wwwBilibili();
+    const webTicket = (await this.apiGenWebTicket()).data;
+
+    this.cookies.set("bili_ticket", webTicket.ticket);
+    this.cookies.set(
+      "bili_ticket_expires",
+      (webTicket.created_at + webTicket.ttl).toString()
+    );
+    this.cookies.set("enable_web_push", "DISABLE");
+
+    await this.activateBuvid();
   }
 }

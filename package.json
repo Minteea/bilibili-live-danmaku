@@ -8,8 +8,8 @@
   "scripts": {
     "test": "npm run clear; npm run unit",
     "clear": "rimraf ./dist",
-    "tsc": "tsc -b",
-    "build": "npm run clear && npm run tsc && tsc-alias",
+    "check": "tsc -noEmit",
+    "build": "npm run clear && tsc -b && tsc-alias",
     "demo": "tsx ./demo/index.ts",
     "prepack": "npm run build",
     "postpack": "npm run clear"

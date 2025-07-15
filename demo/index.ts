@@ -15,7 +15,7 @@ function getEnv(key: string) {
   );
 }
 
-const roomid = 26815357;
+const roomid = 544853;
 
 // 设置 cookie
 // 在根目录创建一个 .env 文件，内容为 API_CLIENT_COOKIE="xxxxxx" 即可设置cookie
@@ -27,8 +27,8 @@ const apiClient = new BilibiliApiClient({
   cookie,
 });
 
-// 访问主页，获取必要cookie
-if (!apiClient.cookies.get("buvid3")) await apiClient.wwwBilibili();
+// 获取必要cookie
+if (!apiClient.cookies.get("buvid3")) await apiClient.initCookie();
 
 // 获取ws配置
 const config: WSOptions = parseLiveConfig(
