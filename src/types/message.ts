@@ -153,7 +153,7 @@ export namespace MessageData {
     };
   }
 
-  export interface LIKE_INFO_V3_CLICK {
+  export interface LIKE_INFO_V3_CLICK extends Base {
     cmd: "LIKE_INFO_V3_CLICK";
     data: {
       contribution_info: { grade: number };
@@ -285,7 +285,7 @@ export namespace MessageData {
       price: number;
     };
   }
-  export interface USER_TOAST_MSG {
+  export interface USER_TOAST_MSG extends Base {
     cmd: "USER_TOAST_MSG";
     data: {
       anchor_show: boolean;
