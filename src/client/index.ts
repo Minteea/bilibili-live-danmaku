@@ -93,7 +93,7 @@ export async function unwrapRequestData<T = any>(
   return resJson;
 }
 
-export async function assertRequestOk(res: Response) {
+export function assertRequestOk(res: Response) {
   if (!res.ok) {
     throw new RequestError({
       ok: false,

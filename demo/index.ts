@@ -15,7 +15,7 @@ function getEnv(key: string) {
   );
 }
 
-const roomid = 544853;
+const roomid = 8432038;
 
 // 设置 cookie
 // 在根目录创建一个 .env 文件，内容为 API_CLIENT_COOKIE="xxxxxx" 即可设置cookie
