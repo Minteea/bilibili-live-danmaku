@@ -474,8 +474,9 @@ export namespace MessageData {
   export type All =
     | DANMU_MSG
     | INTERACT_WORD
+    | LIKE_INFO_V3_CLICK
     | SEND_GIFT
-    | GUARD_BUY
+    | USER_TOAST_MSG
     | SUPER_CHAT_MESSAGE
     | WATCHED_CHANGE
     | LIKE_INFO_V3_UPDATE
