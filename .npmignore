@@ -9,6 +9,8 @@ md/
 .env
 tsconfig.json
 
+protos/
+
 test.js
 
 test/**/*
