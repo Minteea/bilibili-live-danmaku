@@ -10,7 +10,7 @@
     "test": "npm run clear; npm run unit",
     "clear": "rimraf ./dist",
     "check": "tsc -noEmit",
-    "build": "npm run clear && tsc -b && tsc-alias",
+    "build": "npm run clear && tsc -b && npx cpy ./**/*.js ./**/*.d.ts ../dist/ --cwd=./src && tsc-alias",
     "demo": "tsx ./demo/index.ts",
     "prepack": "npm run build",
     "postpack": "npm run clear"
@@ -35,6 +35,7 @@
   "devDependencies": {
     "@types/md5": "^2.3.5",
     "@types/pako": "^2.0.0",
+    "cpy-cli": "^6.0.0",
     "dotenv": "^16.5.0",
     "protobufjs-cli": "^1.1.3",
     "rimraf": "^6.0.1",
