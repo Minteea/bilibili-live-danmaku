@@ -15,7 +15,7 @@ function getEnv(key: string) {
   );
 }
 
-const roomid = 8432038;
+const roomid = 2064239;
 
 // 设置 cookie
 // 在根目录创建一个 .env 文件，内容为 API_CLIENT_COOKIE="xxxxxx" 即可设置cookie
@@ -54,6 +54,10 @@ live.addEventListener("MESSAGE", ({ data }) => {
 
 live.addEventListener("error", (e) => {
   console.log("连接发生错误");
+  console.log(e);
+});
+live.addEventListener("error:decode", (e) => {
+  console.log("解码错误");
   console.log(e);
 });
 

@@ -1,3 +1,5 @@
+import { bilibili } from "../proto";
+
 export namespace MessageData {
   declare enum DanmakuMode {
     left = 1,
@@ -128,6 +130,8 @@ export namespace MessageData {
       7: number;
     };
   }
+
+  /** @deprecated */
   export interface INTERACT_WORD extends Base {
     cmd: "INTERACT_WORD";
     data: {
@@ -151,6 +155,14 @@ export namespace MessageData {
         guard_level: number;
       };
     };
+  }
+
+  export interface INTERACT_WORD_V2 extends Base {
+    cmd: "INTERACT_WORD_V2";
+    data: {
+      pb: string;
+    };
+    decoded?: bilibili.live.xuserreward.v1.IInteractWord;
   }
 
   export interface LIKE_INFO_V3_CLICK extends Base {
@@ -389,6 +401,15 @@ export namespace MessageData {
       online_count?: number;
     };
   }
+
+  export interface ONLINE_RANK_V3 extends Base {
+    cmd: "ONLINE_RANK_V3";
+    data: {
+      pb: string;
+    };
+    decoded?: bilibili.live.rankdb.v1.IGoldRankBroadcast;
+  }
+
   export interface ROOM_BLOCK_MSG extends Base {
     cmd: "ROOM_BLOCK_MSG";
     data: {
@@ -474,6 +495,7 @@ export namespace MessageData {
   export type All =
     | DANMU_MSG
     | INTERACT_WORD
+    | INTERACT_WORD_V2
     | LIKE_INFO_V3_CLICK
     | SEND_GIFT
     | USER_TOAST_MSG
@@ -481,6 +503,7 @@ export namespace MessageData {
     | WATCHED_CHANGE
     | LIKE_INFO_V3_UPDATE
     | ONLINE_RANK_COUNT
+    | ONLINE_RANK_V3
     | ROOM_BLOCK_MSG
     | LIVE
     | CUT_OFF

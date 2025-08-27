@@ -1,5 +1,7 @@
 import { encoder, decoder, JoinPack, WSOperation } from "./buffer";
+import { protoDecoderMap } from "./decoder";
 import { MessageData } from "./types";
+import { ErrorEvent } from "./ponyfill/event";
 
 export type LiveOptions = {
   protover?: 1 | 2 | 3;
@@ -42,7 +44,7 @@ export class Live extends EventTarget {
   roomid: number;
   connected: boolean;
   closed: boolean;
-  timeout: number;
+  timeout: ReturnType<typeof setTimeout> | number;
 
   send: (data: Uint8Array) => void;
   close: () => void;
@@ -97,6 +99,7 @@ export class Live extends EventTarget {
             );
           }
           if (operation === WSOperation.MESSAGE) {
+            this.decodePbMessage(data);
             this.dispatchEvent(
               new DataEvent("MESSAGE", { data, protocol, operation })
             );
@@ -149,6 +152,18 @@ export class Live extends EventTarget {
 
   heartbeat() {
     this.send(encoder(WSOperation.HEARTBEAT));
+  }
+
+  decodePbMessage(msg: MessageData.All & { data?: { pb?: string } }) {
+    if (msg.data?.pb) {
+      try {
+        protoDecoderMap[msg.cmd]?.(msg);
+      } catch (error) {
+        this.dispatchEvent(new ErrorEvent("error:decode", { error }));
+        console.error(error);
+      }
+    }
+    return msg;
   }
 }
 
