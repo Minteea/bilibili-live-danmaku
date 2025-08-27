@@ -54,9 +54,9 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a GroupMedalBrief.
              * @memberof bilibili.live.component.common_model.fans_club
              * @interface IGroupMedalBrief
-             * @property {number|null} [medalId] GroupMedalBrief medalId
+             * @property {number|Long|null} [medalId] GroupMedalBrief medalId
              * @property {string|null} [name] GroupMedalBrief name
-             * @property {number|null} [isLighted] GroupMedalBrief isLighted
+             * @property {number|Long|null} [isLighted] GroupMedalBrief isLighted
              */
 
             /**
@@ -80,7 +80,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GroupMedalBrief medalId.
-             * @member {number} medalId
+             * @member {number|Long} medalId
              * @memberof bilibili.live.component.common_model.fans_club.GroupMedalBrief
              * @instance
              */
@@ -98,7 +98,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GroupMedalBrief isLighted.
-             * @member {number} isLighted
+             * @member {number|Long} isLighted
              * @memberof bilibili.live.component.common_model.fans_club.GroupMedalBrief
              * @instance
              */
@@ -1589,7 +1589,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a Guard.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IGuard
-             * @property {number|null} [level] Guard level
+             * @property {number|Long|null} [level] Guard level
              * @property {string|null} [expiredStr] Guard expiredStr
              */
 
@@ -1614,7 +1614,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Guard level.
-             * @member {number} level
+             * @member {number|Long} level
              * @memberof bilibili.live.component.common_model.user_dagw.Guard
              * @instance
              */
@@ -2113,8 +2113,8 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a GuardLeaderOption.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IGuardLeaderOption
-             * @property {number|null} [ruid] GuardLeaderOption ruid
-             * @property {number|null} [roomId] GuardLeaderOption roomId
+             * @property {number|Long|null} [ruid] GuardLeaderOption ruid
+             * @property {number|Long|null} [roomId] GuardLeaderOption roomId
              */
 
             /**
@@ -2138,7 +2138,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GuardLeaderOption ruid.
-             * @member {number} ruid
+             * @member {number|Long} ruid
              * @memberof bilibili.live.component.common_model.user_dagw.GuardLeaderOption
              * @instance
              */
@@ -2148,7 +2148,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GuardLeaderOption roomId.
-             * @member {number} roomId
+             * @member {number|Long} roomId
              * @memberof bilibili.live.component.common_model.user_dagw.GuardLeaderOption
              * @instance
              */
@@ -2450,7 +2450,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a GuardOption.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IGuardOption
-             * @property {number|null} [ruid] GuardOption ruid
+             * @property {number|Long|null} [ruid] GuardOption ruid
              * @property {boolean|null} [useLocalCache] GuardOption useLocalCache
              * @property {boolean|null} [strongDepend] GuardOption strongDepend
              */
@@ -2476,7 +2476,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GuardOption ruid.
-             * @member {number} ruid
+             * @member {number|Long} ruid
              * @memberof bilibili.live.component.common_model.user_dagw.GuardOption
              * @instance
              */
@@ -2799,17 +2799,17 @@ export const bilibili = ($root.bilibili = (() => {
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IMedal
              * @property {string|null} [name] Medal name
-             * @property {number|null} [level] Medal level
-             * @property {number|null} [colorStart] Medal colorStart
-             * @property {number|null} [colorEnd] Medal colorEnd
-             * @property {number|null} [colorBorder] Medal colorBorder
-             * @property {number|null} [color] Medal color
-             * @property {number|null} [id] Medal id
+             * @property {number|Long|null} [level] Medal level
+             * @property {number|Long|null} [colorStart] Medal colorStart
+             * @property {number|Long|null} [colorEnd] Medal colorEnd
+             * @property {number|Long|null} [colorBorder] Medal colorBorder
+             * @property {number|Long|null} [color] Medal color
+             * @property {number|Long|null} [id] Medal id
              * @property {bilibili.live.component.common_model.user_dagw.HaveMedalType|null} [typ] Medal typ
-             * @property {number|null} [isLight] Medal isLight
-             * @property {number|null} [ruid] Medal ruid
-             * @property {number|null} [guardLevel] Medal guardLevel
-             * @property {number|null} [score] Medal score
+             * @property {number|Long|null} [isLight] Medal isLight
+             * @property {number|Long|null} [ruid] Medal ruid
+             * @property {number|Long|null} [guardLevel] Medal guardLevel
+             * @property {number|Long|null} [score] Medal score
              * @property {string|null} [guardIcon] Medal guardIcon
              * @property {string|null} [honorIcon] Medal honorIcon
              * @property {string|null} [v2MedalColorStart] Medal v2MedalColorStart
@@ -2817,7 +2817,7 @@ export const bilibili = ($root.bilibili = (() => {
              * @property {string|null} [v2MedalColorBorder] Medal v2MedalColorBorder
              * @property {string|null} [v2MedalColorText] Medal v2MedalColorText
              * @property {string|null} [v2MedalColorLevel] Medal v2MedalColorLevel
-             * @property {number|null} [userReceiveCount] Medal userReceiveCount
+             * @property {number|Long|null} [userReceiveCount] Medal userReceiveCount
              */
 
             /**
@@ -2849,7 +2849,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal level.
-             * @member {number} level
+             * @member {number|Long} level
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2859,7 +2859,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal colorStart.
-             * @member {number} colorStart
+             * @member {number|Long} colorStart
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2869,7 +2869,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal colorEnd.
-             * @member {number} colorEnd
+             * @member {number|Long} colorEnd
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2879,7 +2879,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal colorBorder.
-             * @member {number} colorBorder
+             * @member {number|Long} colorBorder
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2889,7 +2889,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal color.
-             * @member {number} color
+             * @member {number|Long} color
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2899,7 +2899,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal id.
-             * @member {number} id
+             * @member {number|Long} id
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2917,7 +2917,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal isLight.
-             * @member {number} isLight
+             * @member {number|Long} isLight
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2927,7 +2927,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal ruid.
-             * @member {number} ruid
+             * @member {number|Long} ruid
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2937,7 +2937,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal guardLevel.
-             * @member {number} guardLevel
+             * @member {number|Long} guardLevel
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -2947,7 +2947,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal score.
-             * @member {number} score
+             * @member {number|Long} score
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -3013,7 +3013,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Medal userReceiveCount.
-             * @member {number} userReceiveCount
+             * @member {number|Long} userReceiveCount
              * @memberof bilibili.live.component.common_model.user_dagw.Medal
              * @instance
              */
@@ -4111,7 +4111,7 @@ export const bilibili = ($root.bilibili = (() => {
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IMedalOption
              * @property {bilibili.live.component.common_model.user_dagw.MedalType|null} [typ] MedalOption typ
-             * @property {number|null} [ruid] MedalOption ruid
+             * @property {number|Long|null} [ruid] MedalOption ruid
              * @property {boolean|null} [needGuard] MedalOption needGuard
              * @property {boolean|null} [strongDepend] MedalOption strongDepend
              * @property {boolean|null} [needGroup] MedalOption needGroup
@@ -4146,7 +4146,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * MedalOption ruid.
-             * @member {number} ruid
+             * @member {number|Long} ruid
              * @memberof bilibili.live.component.common_model.user_dagw.MedalOption
              * @instance
              */
@@ -4544,10 +4544,10 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of an OfficialInfo.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IOfficialInfo
-             * @property {number|null} [role] OfficialInfo role
+             * @property {number|Long|null} [role] OfficialInfo role
              * @property {string|null} [title] OfficialInfo title
              * @property {string|null} [desc] OfficialInfo desc
-             * @property {number|null} [type] OfficialInfo type
+             * @property {number|Long|null} [type] OfficialInfo type
              */
 
             /**
@@ -4571,7 +4571,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * OfficialInfo role.
-             * @member {number} role
+             * @member {number|Long} role
              * @memberof bilibili.live.component.common_model.user_dagw.OfficialInfo
              * @instance
              */
@@ -4597,7 +4597,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * OfficialInfo type.
-             * @member {number} type
+             * @member {number|Long} type
              * @memberof bilibili.live.component.common_model.user_dagw.OfficialInfo
              * @instance
              */
@@ -4929,7 +4929,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a RiskCtrl.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IRiskCtrl
-             * @property {number|null} [roomId] RiskCtrl roomId
+             * @property {number|Long|null} [roomId] RiskCtrl roomId
              * @property {bilibili.live.component.common_model.user_dagw.RiskPolicyEnum|null} [policy] RiskCtrl policy
              */
 
@@ -4954,7 +4954,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * RiskCtrl roomId.
-             * @member {number} roomId
+             * @member {number|Long} roomId
              * @memberof bilibili.live.component.common_model.user_dagw.RiskCtrl
              * @instance
              */
@@ -6053,7 +6053,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a TitleOption.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface ITitleOption
-             * @property {number|null} [roomId] TitleOption roomId
+             * @property {number|Long|null} [roomId] TitleOption roomId
              * @property {boolean|null} [strongDepend] TitleOption strongDepend
              */
 
@@ -6078,7 +6078,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * TitleOption roomId.
-             * @member {number} roomId
+             * @member {number|Long} roomId
              * @memberof bilibili.live.component.common_model.user_dagw.TitleOption
              * @instance
              */
@@ -6352,7 +6352,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a UserHeadFrame.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IUserHeadFrame
-             * @property {number|null} [id] UserHeadFrame id
+             * @property {number|Long|null} [id] UserHeadFrame id
              * @property {string|null} [frameImg] UserHeadFrame frameImg
              */
 
@@ -6377,7 +6377,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * UserHeadFrame id.
-             * @member {number} id
+             * @member {number|Long} id
              * @memberof bilibili.live.component.common_model.user_dagw.UserHeadFrame
              * @instance
              */
@@ -6649,7 +6649,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a UserInfo.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IUserInfo
-             * @property {number|null} [uid] UserInfo uid
+             * @property {number|Long|null} [uid] UserInfo uid
              * @property {bilibili.live.component.common_model.user_dagw.IBase|null} [base] UserInfo base
              * @property {bilibili.live.component.common_model.user_dagw.IMedal|null} [medal] UserInfo medal
              * @property {bilibili.live.component.common_model.user_dagw.IWealth|null} [wealth] UserInfo wealth
@@ -6680,7 +6680,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * UserInfo uid.
-             * @member {number} uid
+             * @member {number|Long} uid
              * @memberof bilibili.live.component.common_model.user_dagw.UserInfo
              * @instance
              */
@@ -7269,7 +7269,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a Wealth.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IWealth
-             * @property {number|null} [level] Wealth level
+             * @property {number|Long|null} [level] Wealth level
              * @property {string|null} [dmIconKey] Wealth dmIconKey
              */
 
@@ -7294,7 +7294,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * Wealth level.
-             * @member {number} level
+             * @member {number|Long} level
              * @memberof bilibili.live.component.common_model.user_dagw.Wealth
              * @instance
              */
@@ -7565,9 +7565,9 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a WealthOption.
              * @memberof bilibili.live.component.common_model.user_dagw
              * @interface IWealthOption
-             * @property {number|null} [roomid] WealthOption roomid
-             * @property {number|null} [viewUid] WealthOption viewUid
-             * @property {number|null} [ruid] WealthOption ruid
+             * @property {number|Long|null} [roomid] WealthOption roomid
+             * @property {number|Long|null} [viewUid] WealthOption viewUid
+             * @property {number|Long|null} [ruid] WealthOption ruid
              * @property {boolean|null} [strongDepend] WealthOption strongDepend
              */
 
@@ -7592,7 +7592,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * WealthOption roomid.
-             * @member {number} roomid
+             * @member {number|Long} roomid
              * @memberof bilibili.live.component.common_model.user_dagw.WealthOption
              * @instance
              */
@@ -7602,7 +7602,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * WealthOption viewUid.
-             * @member {number} viewUid
+             * @member {number|Long} viewUid
              * @memberof bilibili.live.component.common_model.user_dagw.WealthOption
              * @instance
              */
@@ -7612,7 +7612,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * WealthOption ruid.
-             * @member {number} ruid
+             * @member {number|Long} ruid
              * @memberof bilibili.live.component.common_model.user_dagw.WealthOption
              * @instance
              */
@@ -8376,12 +8376,12 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a GoldRankBroadcastItem.
              * @memberof bilibili.live.rankdb.v1.GoldRankBroadcast
              * @interface IGoldRankBroadcastItem
-             * @property {number|null} [uid] GoldRankBroadcastItem uid
+             * @property {number|Long|null} [uid] GoldRankBroadcastItem uid
              * @property {string|null} [face] GoldRankBroadcastItem face
              * @property {string|null} [score] GoldRankBroadcastItem score
              * @property {string|null} [uname] GoldRankBroadcastItem uname
-             * @property {number|null} [rank] GoldRankBroadcastItem rank
-             * @property {number|null} [guardLevel] GoldRankBroadcastItem guardLevel
+             * @property {number|Long|null} [rank] GoldRankBroadcastItem rank
+             * @property {number|Long|null} [guardLevel] GoldRankBroadcastItem guardLevel
              * @property {boolean|null} [isMystery] GoldRankBroadcastItem isMystery
              * @property {bilibili.live.component.common_model.user_dagw.IUserInfo|null} [uinfo] GoldRankBroadcastItem uinfo
              */
@@ -8407,7 +8407,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GoldRankBroadcastItem uid.
-             * @member {number} uid
+             * @member {number|Long} uid
              * @memberof bilibili.live.rankdb.v1.GoldRankBroadcast.GoldRankBroadcastItem
              * @instance
              */
@@ -8441,7 +8441,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GoldRankBroadcastItem rank.
-             * @member {number} rank
+             * @member {number|Long} rank
              * @memberof bilibili.live.rankdb.v1.GoldRankBroadcast.GoldRankBroadcastItem
              * @instance
              */
@@ -8451,7 +8451,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * GoldRankBroadcastItem guardLevel.
-             * @member {number} guardLevel
+             * @member {number|Long} guardLevel
              * @memberof bilibili.live.rankdb.v1.GoldRankBroadcast.GoldRankBroadcastItem
              * @instance
              */
@@ -8982,23 +8982,23 @@ export const bilibili = ($root.bilibili = (() => {
            * Properties of an InteractWord.
            * @memberof bilibili.live.xuserreward.v1
            * @interface IInteractWord
-           * @property {number|null} [uid] InteractWord uid
+           * @property {number|Long|null} [uid] InteractWord uid
            * @property {string|null} [uname] InteractWord uname
            * @property {string|null} [unameColor] InteractWord unameColor
-           * @property {Array.<number>|null} [identities] InteractWord identities
-           * @property {number|null} [msgType] InteractWord msgType
-           * @property {number|null} [roomid] InteractWord roomid
-           * @property {number|null} [timestamp] InteractWord timestamp
-           * @property {number|null} [score] InteractWord score
+           * @property {Array.<number|Long>|null} [identities] InteractWord identities
+           * @property {number|Long|null} [msgType] InteractWord msgType
+           * @property {number|Long|null} [roomid] InteractWord roomid
+           * @property {number|Long|null} [timestamp] InteractWord timestamp
+           * @property {number|Long|null} [score] InteractWord score
            * @property {bilibili.live.xuserreward.v1.InteractWord.IFansMedalInfo|null} [fansMedal] InteractWord fansMedal
-           * @property {number|null} [isSpread] InteractWord isSpread
+           * @property {number|Long|null} [isSpread] InteractWord isSpread
            * @property {string|null} [spreadInfo] InteractWord spreadInfo
            * @property {bilibili.live.xuserreward.v1.InteractWord.IContributionInfo|null} [contribution] InteractWord contribution
            * @property {string|null} [spreadDesc] InteractWord spreadDesc
-           * @property {number|null} [tailIcon] InteractWord tailIcon
-           * @property {number|null} [triggerTime] InteractWord triggerTime
-           * @property {number|null} [privilegeType] InteractWord privilegeType
-           * @property {number|null} [coreUserType] InteractWord coreUserType
+           * @property {number|Long|null} [tailIcon] InteractWord tailIcon
+           * @property {number|Long|null} [triggerTime] InteractWord triggerTime
+           * @property {number|Long|null} [privilegeType] InteractWord privilegeType
+           * @property {number|Long|null} [coreUserType] InteractWord coreUserType
            * @property {string|null} [tailText] InteractWord tailText
            * @property {bilibili.live.xuserreward.v1.InteractWord.IContributionInfoV2|null} [contributionV2] InteractWord contributionV2
            * @property {bilibili.live.component.common_model.fans_club.IGroupMedalBrief|null} [groupMedal] InteractWord groupMedal
@@ -9029,7 +9029,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord uid.
-           * @member {number} uid
+           * @member {number|Long} uid
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9055,7 +9055,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord identities.
-           * @member {Array.<number>} identities
+           * @member {Array.<number|Long>} identities
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9063,7 +9063,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord msgType.
-           * @member {number} msgType
+           * @member {number|Long} msgType
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9073,7 +9073,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord roomid.
-           * @member {number} roomid
+           * @member {number|Long} roomid
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9083,7 +9083,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord timestamp.
-           * @member {number} timestamp
+           * @member {number|Long} timestamp
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9093,7 +9093,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord score.
-           * @member {number} score
+           * @member {number|Long} score
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9111,7 +9111,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord isSpread.
-           * @member {number} isSpread
+           * @member {number|Long} isSpread
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9145,7 +9145,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord tailIcon.
-           * @member {number} tailIcon
+           * @member {number|Long} tailIcon
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9155,7 +9155,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord triggerTime.
-           * @member {number} triggerTime
+           * @member {number|Long} triggerTime
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9165,7 +9165,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord privilegeType.
-           * @member {number} privilegeType
+           * @member {number|Long} privilegeType
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -9175,7 +9175,7 @@ export const bilibili = ($root.bilibili = (() => {
 
           /**
            * InteractWord coreUserType.
-           * @member {number} coreUserType
+           * @member {number|Long} coreUserType
            * @memberof bilibili.live.xuserreward.v1.InteractWord
            * @instance
            */
@@ -10491,7 +10491,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a ContributionInfo.
              * @memberof bilibili.live.xuserreward.v1.InteractWord
              * @interface IContributionInfo
-             * @property {number|null} [grade] ContributionInfo grade
+             * @property {number|Long|null} [grade] ContributionInfo grade
              */
 
             /**
@@ -10515,7 +10515,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * ContributionInfo grade.
-             * @member {number} grade
+             * @member {number|Long} grade
              * @memberof bilibili.live.xuserreward.v1.InteractWord.ContributionInfo
              * @instance
              */
@@ -10757,7 +10757,7 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a ContributionInfoV2.
              * @memberof bilibili.live.xuserreward.v1.InteractWord
              * @interface IContributionInfoV2
-             * @property {number|null} [grade] ContributionInfoV2 grade
+             * @property {number|Long|null} [grade] ContributionInfoV2 grade
              * @property {string|null} [rankType] ContributionInfoV2 rankType
              * @property {string|null} [text] ContributionInfoV2 text
              */
@@ -10783,7 +10783,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * ContributionInfoV2 grade.
-             * @member {number} grade
+             * @member {number|Long} grade
              * @memberof bilibili.live.xuserreward.v1.InteractWord.ContributionInfoV2
              * @instance
              */
@@ -11084,19 +11084,19 @@ export const bilibili = ($root.bilibili = (() => {
              * Properties of a FansMedalInfo.
              * @memberof bilibili.live.xuserreward.v1.InteractWord
              * @interface IFansMedalInfo
-             * @property {number|null} [targetId] FansMedalInfo targetId
-             * @property {number|null} [medalLevel] FansMedalInfo medalLevel
+             * @property {number|Long|null} [targetId] FansMedalInfo targetId
+             * @property {number|Long|null} [medalLevel] FansMedalInfo medalLevel
              * @property {string|null} [medalName] FansMedalInfo medalName
-             * @property {number|null} [medalColor] FansMedalInfo medalColor
-             * @property {number|null} [medalColorStart] FansMedalInfo medalColorStart
-             * @property {number|null} [medalColorEnd] FansMedalInfo medalColorEnd
-             * @property {number|null} [medalColorBorder] FansMedalInfo medalColorBorder
-             * @property {number|null} [isLighted] FansMedalInfo isLighted
-             * @property {number|null} [guardLevel] FansMedalInfo guardLevel
+             * @property {number|Long|null} [medalColor] FansMedalInfo medalColor
+             * @property {number|Long|null} [medalColorStart] FansMedalInfo medalColorStart
+             * @property {number|Long|null} [medalColorEnd] FansMedalInfo medalColorEnd
+             * @property {number|Long|null} [medalColorBorder] FansMedalInfo medalColorBorder
+             * @property {number|Long|null} [isLighted] FansMedalInfo isLighted
+             * @property {number|Long|null} [guardLevel] FansMedalInfo guardLevel
              * @property {string|null} [special] FansMedalInfo special
-             * @property {number|null} [iconId] FansMedalInfo iconId
-             * @property {number|null} [anchorRoomid] FansMedalInfo anchorRoomid
-             * @property {number|null} [score] FansMedalInfo score
+             * @property {number|Long|null} [iconId] FansMedalInfo iconId
+             * @property {number|Long|null} [anchorRoomid] FansMedalInfo anchorRoomid
+             * @property {number|Long|null} [score] FansMedalInfo score
              */
 
             /**
@@ -11120,7 +11120,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo targetId.
-             * @member {number} targetId
+             * @member {number|Long} targetId
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11130,7 +11130,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo medalLevel.
-             * @member {number} medalLevel
+             * @member {number|Long} medalLevel
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11148,7 +11148,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo medalColor.
-             * @member {number} medalColor
+             * @member {number|Long} medalColor
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11158,7 +11158,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo medalColorStart.
-             * @member {number} medalColorStart
+             * @member {number|Long} medalColorStart
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11168,7 +11168,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo medalColorEnd.
-             * @member {number} medalColorEnd
+             * @member {number|Long} medalColorEnd
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11178,7 +11178,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo medalColorBorder.
-             * @member {number} medalColorBorder
+             * @member {number|Long} medalColorBorder
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11188,7 +11188,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo isLighted.
-             * @member {number} isLighted
+             * @member {number|Long} isLighted
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11198,7 +11198,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo guardLevel.
-             * @member {number} guardLevel
+             * @member {number|Long} guardLevel
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11216,7 +11216,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo iconId.
-             * @member {number} iconId
+             * @member {number|Long} iconId
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11226,7 +11226,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo anchorRoomid.
-             * @member {number} anchorRoomid
+             * @member {number|Long} anchorRoomid
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -11236,7 +11236,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * FansMedalInfo score.
-             * @member {number} score
+             * @member {number|Long} score
              * @memberof bilibili.live.xuserreward.v1.InteractWord.FansMedalInfo
              * @instance
              */
@@ -12194,7 +12194,7 @@ export const bilibili = ($root.bilibili = (() => {
              * @interface IUserAnchorRelation
              * @property {string|null} [tailIcon] UserAnchorRelation tailIcon
              * @property {string|null} [tailGuideText] UserAnchorRelation tailGuideText
-             * @property {number|null} [tailType] UserAnchorRelation tailType
+             * @property {number|Long|null} [tailType] UserAnchorRelation tailType
              */
 
             /**
@@ -12234,7 +12234,7 @@ export const bilibili = ($root.bilibili = (() => {
 
             /**
              * UserAnchorRelation tailType.
-             * @member {number} tailType
+             * @member {number|Long} tailType
              * @memberof bilibili.live.xuserreward.v1.InteractWord.UserAnchorRelation
              * @instance
              */
