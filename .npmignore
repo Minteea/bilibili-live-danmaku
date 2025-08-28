@@ -10,6 +10,7 @@ md/
 tsconfig.json
 
 protos/
+scripts/
 
 test.js
 

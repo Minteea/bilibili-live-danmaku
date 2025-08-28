@@ -6,7 +6,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "proto": "pbjs -t static-module -w es6 -o ./src/proto/index.js -p ./protos ./protos/**/*.proto && pbts -o ./src/proto/index.d.ts ./src/proto/index.js",
+    "proto": "pbjs -t static-module -w es6 -o ./src/proto/index.js -p ./protos ./protos/**/*.proto && pbts -o ./src/proto/index.d.ts ./src/proto/index.js && tsx ./scripts/proto-after.ts",
     "test": "npm run clear; npm run unit",
     "clear": "rimraf ./dist",
     "check": "tsc -noEmit",
