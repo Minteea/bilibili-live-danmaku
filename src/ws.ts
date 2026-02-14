@@ -10,12 +10,12 @@ export class LiveWS extends Live {
     {
       address = "wss://broadcastlv.chat.bilibili.com/sub",
       ...options
-    }: WSOptions = {}
+    }: WSOptions = {},
   ) {
     const ws = new WebSocket(address);
     const send = (data: Uint8Array) => {
       if (ws.readyState === 1) {
-        ws.send(data);
+        ws.send(data as Uint8Array<ArrayBuffer>);
       }
     };
     const close = () => this.ws.close();
@@ -23,13 +23,13 @@ export class LiveWS extends Live {
     super(roomid, { send, close, ...options });
 
     ws.addEventListener("open", (e) =>
-      this.dispatchEvent(new Event(e.type, e))
+      this.dispatchEvent(new Event(e.type, e)),
     );
     ws.addEventListener("message", (e) =>
-      this.dispatchEvent(new MessageEvent(e.type, e as any))
+      this.dispatchEvent(new MessageEvent(e.type, e as any)),
     );
     ws.addEventListener("close", (e) =>
-      this.dispatchEvent(new CloseEvent(e.type, e))
+      this.dispatchEvent(new CloseEvent(e.type, e)),
     );
     ws.addEventListener("error", (e) => {
       this.close();
