@@ -31,7 +31,7 @@ export class DataEvent<T> extends Event {
   operation?: number;
   constructor(
     type: string,
-    { data, operation, protocol }: DataEventInitDict<T>
+    { data, operation, protocol }: DataEventInitDict<T>,
   ) {
     super(type);
     this.data = data;
@@ -59,7 +59,7 @@ export class Live extends EventTarget {
       authBody,
       uid = 0,
       buvid,
-    }: { send: (data: Uint8Array) => void; close: () => void } & LiveOptions
+    }: { send: (data: Uint8Array) => void; close: () => void } & LiveOptions,
   ) {
     if (typeof roomid !== "number" || Number.isNaN(roomid)) {
       throw new TypeError(`roomid ${roomid} must be Number not NaN`);
@@ -73,6 +73,7 @@ export class Live extends EventTarget {
 
     this.send = send;
     this.close = () => {
+      if (this.closed) return;
       this.closed = true;
       close();
     };
@@ -80,14 +81,14 @@ export class Live extends EventTarget {
     this.addEventListener("message", async (e: MessageEvent) => {
       try {
         const buffer = new Uint8Array(
-          await new Response(e.data as Blob).arrayBuffer()
+          await new Response(e.data as Blob).arrayBuffer(),
         );
         const packs = decoder(buffer);
         packs.forEach(({ data, protocol, operation }) => {
           if (operation === WSOperation.CONNECT_SUCCESS) {
             this.connected = true;
             this.dispatchEvent(
-              new DataEvent("CONNECT_SUCCESS", { data, protocol, operation })
+              new DataEvent("CONNECT_SUCCESS", { data, protocol, operation }),
             );
             this.send(encoder(WSOperation.HEARTBEAT));
           }
@@ -95,18 +96,18 @@ export class Live extends EventTarget {
             clearTimeout(this.timeout);
             this.timeout = setTimeout(() => this.heartbeat(), 1000 * 30);
             this.dispatchEvent(
-              new DataEvent("HEARTBEAT_REPLY", { data, protocol, operation })
+              new DataEvent("HEARTBEAT_REPLY", { data, protocol, operation }),
             );
           }
           if (operation === WSOperation.MESSAGE) {
             this.decodePbMessage(data);
             this.dispatchEvent(
-              new DataEvent("MESSAGE", { data, protocol, operation })
+              new DataEvent("MESSAGE", { data, protocol, operation }),
             );
             const cmd = data.cmd || data.msg?.cmd;
             if (cmd) {
               this.dispatchEvent(
-                new DataEvent(cmd, { data, protocol, operation })
+                new DataEvent(cmd, { data, protocol, operation }),
               );
             }
           } else {
@@ -219,7 +220,7 @@ export interface Live {
   addEventListener<K extends keyof LiveEventMap>(
     type: K,
     listener: (ev: LiveEventMap[K]) => any,
-    options?: boolean | AddEventListenerOptions
+    options?: boolean | AddEventListenerOptions,
   ): void;
 
   dispatchEvent<K extends keyof LiveEventMap>(event: LiveEventMap[K]): boolean;
@@ -227,6 +228,6 @@ export interface Live {
   removeEventListener(
     type: string,
     listener: EventListenerOrEventListenerObject,
-    options?: boolean | EventListenerOptions
+    options?: boolean | EventListenerOptions,
   ): void;
 }
