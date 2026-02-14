@@ -1,6 +1,6 @@
 {
   "name": "bilibili-live-danmaku",
-  "version": "0.7.14",
+  "version": "0.7.15",
   "description": "Bilibili Live WebSocket API",
   "type": "module",
   "main": "./dist/index.js",
